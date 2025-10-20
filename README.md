@@ -5,7 +5,8 @@
 ## Технологический стек
 
 **Frontend:** Next.js 15, TypeScript, Tailwind CSS, Server Actions, Zod, Headless UI  
-**Backend:** NestJS, TypeScript, Prisma, PostgreSQL, Zod, Swagger
+**Backend:** NestJS, TypeScript, Prisma, PostgreSQL, Zod, Swagger  
+**Infrastructure:** Nginx
 
 ## База данных
 
@@ -25,9 +26,9 @@ cd productsApp
 
 > **Примечание:** Скрипт автоматически установит все зависимости, настроит базу данных, установит и настроит Nginx, и запустит приложение. Для остановки нажмите `Ctrl+C`.
 
-**Основной сайт:** http://localhost  
-**API:** http://localhost/api  
-**Swagger:** http://localhost/swagger
+**Основной сайт:** http://localhost:8080  
+**API:** http://localhost:8080/api  
+**Swagger:** http://localhost:8080/swagger
 
 ## Функциональность
 
@@ -103,6 +104,7 @@ cd frontend/next-app && npm run dev
 
 ## Особенности архитектуры
 
+- **Nginx** - проксирование запросов с сжатием (кеширование отключено)
 - **Декомпозированные компоненты** - модульная архитектура с переиспользуемыми частями
 - **Server Actions** с автоматической ревалидацией кеша
 - **Централизованная валидация** через Zod схемы
