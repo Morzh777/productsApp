@@ -66,6 +66,7 @@ export function ProductForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     // Клиентская валидация ProductFormSchema
     const toValidate = {
       title: formData.title,
@@ -75,6 +76,7 @@ export function ProductForm({
       category: formData.category,
       rating: formData.rating,
     };
+    
     const validateResult = ProductFormSchema.safeParse(toValidate);
     if (!validateResult.success) {
       const flat = validateResult.error.flatten();
@@ -178,7 +180,10 @@ export function ProductForm({
           <Combobox
             value={formData.category}
             onChange={(v: string | null) => {
-              setFormData({ ...formData, category: v ?? "" });
+              const newCategory = v ?? "";
+              setFormData({ ...formData, category: newCategory });
+              setCategoryQuery(newCategory);
+              setFieldError('category');
             }}
           >
             <div className="relative">
@@ -186,7 +191,12 @@ export function ProductForm({
                   className="w-full pl-3 pr-10 py-2 h-[40px] rounded-md border border-gray-300 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 placeholder:text-gray-400"
                 placeholder="Выберите или введите"
                   displayValue={(v: string | null) => v ?? ""}
-                  onChange={(e) => { setCategoryQuery(e.target.value); setFieldError('category'); }}
+                  onChange={(e) => { 
+                    const value = e.target.value;
+                    setCategoryQuery(value);
+                    setFormData({ ...formData, category: value });
+                    setFieldError('category');
+                  }}
                   onFocus={() => categoryButtonRef.current?.click()}
               />
                 <ComboboxButton aria-label="Открыть список категорий" className="absolute inset-y-0 right-0 w-10 px-3 flex items-center justify-center" ref={categoryButtonRef}>

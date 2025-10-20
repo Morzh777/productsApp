@@ -49,10 +49,32 @@ export async function getProduct(id: number) {
   });
   
   if (!response.ok) {
-    throw new Error('Ошибка при загрузке товара');
+    if (response.status === 404) {
+      throw new Error('Товар не найден');
+    }
+    throw new Error(`Ошибка при загрузке товара: ${response.status}`);
   }
   
-  const data = await response.json();
+  // Проверяем, есть ли содержимое
+  const contentType = response.headers.get('content-type');
+  
+  if (!contentType || !contentType.includes('application/json')) {
+    const text = await response.text();
+    throw new Error('Ответ сервера не содержит JSON');
+  }
+  
+  const text = await response.text();
+  
+  if (!text.trim()) {
+    throw new Error('Пустой ответ от сервера');
+  }
+  
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (error) {
+    throw new Error('Ошибка парсинга JSON');
+  }
   
   // Валидация ответа
   const validationResult = ProductSchema.safeParse(data);

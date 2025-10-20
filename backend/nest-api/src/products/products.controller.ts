@@ -8,6 +8,7 @@ import {
   Delete,
   ParseIntPipe,
   Query,
+  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -61,8 +62,12 @@ export class ProductsController {
   @ApiParam({ name: 'id', description: 'ID товара' })
   @ApiResponse({ status: 200, description: 'Товар найден' })
   @ApiResponse({ status: 404, description: 'Товар не найден' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const product = await this.productsService.findOne(id);
+    if (!product) {
+      throw new NotFoundException(`Товар с ID ${id} не найден`);
+    }
+    return product;
   }
 
   @Patch(':id')

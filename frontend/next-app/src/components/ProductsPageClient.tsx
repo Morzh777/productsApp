@@ -74,6 +74,7 @@ export function ProductsPageClient({ products, categories = [] }: ProductsPageCl
                       src={product.image as string}
                       alt={product.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                       className="object-contain object-center"
                     />
                   ) : (

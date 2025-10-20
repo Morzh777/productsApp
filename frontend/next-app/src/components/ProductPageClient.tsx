@@ -32,8 +32,8 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
 
   const handleDelete = async (productId: number) => {
     try {
-      await deleteProductAction(productId);
       router.push("/products");
+      await deleteProductAction(productId);
     } catch (error) {
       console.error("Ошибка при удалении:", error);
       throw error;
@@ -82,6 +82,7 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
                     src={currentProduct.image}
                     alt={currentProduct.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-contain"
                   />
                 ) : (

@@ -35,9 +35,10 @@ export class ProductsService {
   }
 
   async remove(id: number) {
-    return this.prisma.product.delete({
+    await this.prisma.product.delete({
       where: { id },
     });
+    return { success: true };
   }
 
   async findByCategory(category: string) {
