@@ -11,7 +11,6 @@ const products = [
     category: "men's clothing",
     image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png',
     rating: 3.9,
-    count: 120,
   },
   {
     title: 'Mens Casual Premium Slim Fit T-Shirts ',
@@ -22,7 +21,6 @@ const products = [
     image:
       'https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_t.png',
     rating: 4.1,
-    count: 259,
   },
   {
     title: 'Mens Cotton Jacket',
@@ -32,7 +30,6 @@ const products = [
     category: "men's clothing",
     image: 'https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_t.png',
     rating: 4.7,
-    count: 500,
   },
   {
     title: 'Mens Casual Slim Fit',
@@ -42,7 +39,6 @@ const products = [
     category: "men's clothing",
     image: 'https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png',
     rating: 2.1,
-    count: 430,
   },
   {
     title:
@@ -53,7 +49,6 @@ const products = [
     category: 'jewelery',
     image: 'https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_t.png',
     rating: 4.6,
-    count: 400,
   },
   {
     title: 'Solid Gold Petite Micropave ',
@@ -63,7 +58,6 @@ const products = [
     category: 'jewelery',
     image: 'https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_t.png',
     rating: 3.9,
-    count: 70,
   },
   {
     title: 'White Gold Plated Princess',
@@ -73,7 +67,6 @@ const products = [
     category: 'jewelery',
     image: 'https://fakestoreapi.com/img/71YAIFU48IL._AC_UL640_QL65_ML3_t.png',
     rating: 3,
-    count: 400,
   },
   {
     title: 'Pierced Owl Rose Gold Plated Stainless Steel Double',
@@ -83,7 +76,6 @@ const products = [
     category: 'jewelery',
     image: 'https://fakestoreapi.com/img/51UDEzMJVpL._AC_UL640_QL65_ML3_t.png',
     rating: 1.9,
-    count: 100,
   },
   {
     title: 'WD 2TB Elements Portable External Hard Drive - USB 3.0 ',
@@ -93,7 +85,6 @@ const products = [
     category: 'electronics',
     image: 'https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_t.png',
     rating: 3.3,
-    count: 203,
   },
   {
     title: 'SanDisk SSD PLUS 1TB Internal SSD - SATA III 6 Gb/s',
@@ -103,7 +94,6 @@ const products = [
     category: 'electronics',
     image: 'https://fakestoreapi.com/img/61U7T1koQqL._AC_SX679_t.png',
     rating: 2.9,
-    count: 470,
   },
   {
     title:
@@ -114,7 +104,6 @@ const products = [
     category: 'electronics',
     image: 'https://fakestoreapi.com/img/71kWymZ+c+L._AC_SX679_t.png',
     rating: 4.8,
-    count: 319,
   },
   {
     title:
@@ -125,7 +114,6 @@ const products = [
     category: 'electronics',
     image: 'https://fakestoreapi.com/img/61mtL65D4cL._AC_SX679_t.png',
     rating: 4.8,
-    count: 400,
   },
   {
     title: 'Acer SB220Q bi 21.5 inches Full HD (1920 x 1080) IPS Ultra-Thin',
@@ -135,7 +123,6 @@ const products = [
     category: 'electronics',
     image: 'https://fakestoreapi.com/img/81QpkIctqPL._AC_SX679_t.png',
     rating: 2.9,
-    count: 250,
   },
   {
     title:
@@ -146,7 +133,6 @@ const products = [
     category: 'electronics',
     image: 'https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_t.png',
     rating: 2.2,
-    count: 140,
   },
   {
     title: "BIYLACLESEN Women's 3-in-1 Snowboard Jacket Winter Coats",
@@ -156,7 +142,6 @@ const products = [
     category: "women's clothing",
     image: 'https://fakestoreapi.com/img/51Y5NI-I5jL._AC_UX679_t.png',
     rating: 2.6,
-    count: 235,
   },
   {
     title:
@@ -167,7 +152,6 @@ const products = [
     category: "women's clothing",
     image: 'https://fakestoreapi.com/img/81XH0e8fefL._AC_UY879_t.png',
     rating: 2.9,
-    count: 340,
   },
   {
     title: 'Rain Jacket Women Windbreaker Striped Climbing Raincoats',
@@ -177,7 +161,6 @@ const products = [
     category: "women's clothing",
     image: 'https://fakestoreapi.com/img/71HblAHs5xL._AC_UY879_-2t.png',
     rating: 3.8,
-    count: 679,
   },
   {
     title: "MBJ Women's Solid Short Sleeve Boat Neck V ",
@@ -187,7 +170,6 @@ const products = [
     category: "women's clothing",
     image: 'https://fakestoreapi.com/img/71z3kpMAYsL._AC_UY879_t.png',
     rating: 4.7,
-    count: 130,
   },
   {
     title: "Opna Women's Short Sleeve Moisture",
@@ -197,7 +179,6 @@ const products = [
     category: "women's clothing",
     image: 'https://fakestoreapi.com/img/51eg55uWmdL._AC_UX679_t.png',
     rating: 4.5,
-    count: 146,
   },
   {
     title: 'DANVOUY Womens T Shirt Casual Cotton Short',
@@ -207,7 +188,6 @@ const products = [
     category: "women's clothing",
     image: 'https://fakestoreapi.com/img/61pHAEJ4NML._AC_UX679_t.png',
     rating: 3.6,
-    count: 145,
   },
 ];
 

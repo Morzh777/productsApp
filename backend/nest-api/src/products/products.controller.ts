@@ -49,13 +49,6 @@ export class ProductsController {
     return this.productsService.findAll();
   }
 
-  @Get('categories')
-  @ApiOperation({ summary: 'Получить список категорий' })
-  @ApiResponse({ status: 200, description: 'Список строк категорий' })
-  getCategories() {
-    return this.productsService.getCategories();
-  }
-
   @Get(':id')
   @ApiOperation({ summary: 'Получить товар по ID' })
   @ApiParam({ name: 'id', description: 'ID товара' })
@@ -80,13 +73,9 @@ export class ProductsController {
   @Delete(':id')
   @ApiOperation({ summary: 'Удалить товар' })
   @ApiParam({ name: 'id', description: 'ID товара' })
-  @ApiResponse({
-    status: 200,
-    description: 'Успешное удаление',
-    schema: { example: { success: true } },
-  })
+  @ApiResponse({ status: 200, description: 'Товар удален' })
   @ApiResponse({ status: 404, description: 'Товар не найден' })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.remove(id).then(() => ({ success: true }));
+    return this.productsService.remove(id);
   }
 }

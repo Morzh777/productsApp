@@ -8,12 +8,7 @@ export const UpdateProductSchema = z.object({
     .optional(),
   price: z.number().positive('Цена должна быть положительной').optional(),
   description: z.string().optional(),
-  image: z
-    .union([
-      z.url({ message: 'Неверный URL изображения' }).nullish(),
-      z.literal(''),
-    ])
-    .optional(),
+  image: z.union([z.url({ message: 'Неверный URL изображения' }).nullish(), z.literal('')]).optional(),
   category: z
     .string()
     .min(1, 'Категория обязательна')

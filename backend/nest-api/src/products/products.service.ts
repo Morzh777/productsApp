@@ -48,13 +48,4 @@ export class ProductsService {
       },
     });
   }
-
-  async getCategories() {
-    const rows = await this.prisma.product.findMany({
-      select: { category: true },
-      distinct: ['category'],
-      orderBy: { category: 'asc' },
-    });
-    return rows.map((r) => r.category).filter((c): c is string => !!c);
-  }
 }
