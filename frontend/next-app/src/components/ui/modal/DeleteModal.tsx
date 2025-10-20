@@ -4,6 +4,15 @@ import type { DeleteConfirmModalProps } from "@/types/components/DeleteConfirmMo
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 
+/**
+ * Модальное окно подтверждения удаления продукта
+ * 
+ * Предоставляет интерфейс для подтверждения удаления товара с отображением
+ * названия продукта и предупреждением о необратимости действия.
+ * 
+ * @param props - Пропсы компонента DeleteConfirmModalProps
+ * @returns JSX элемент модального окна подтверждения удаления
+ */
 export function DeleteConfirmModal({
   product,
   isOpen,

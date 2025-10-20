@@ -5,6 +5,10 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // Настройки для избежания таймаутов
+  relationMode = "prisma"
+  // Настройки пула соединений
+  directUrl = env("DATABASE_URL")
 }
 
 model Product {

@@ -1,77 +1,64 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ProductSchema, type Product } from '../../shared/schemas/product.schema';
+import { ProductSchema, type Product } from '@/shared/schemas/product.schema';
+import { API_URLS, REVALIDATION_PATHS } from '@/config/routes';
+import { createPostRequest, createPatchRequest, createDeleteRequest } from '@/config/api-utils';
+import { ErrorHandler, ERROR_MESSAGES } from '@/config/errors';
 
-const API_BASE_URL = 'http://localhost:3002/api';
-
-// Server Actions для работы с товарами
+/**
+ * Server Actions для работы с товарами
+ * 
+ * Предоставляет серверные действия для создания, обновления и удаления товаров
+ * с автоматическим обновлением кеша Next.js через revalidatePath.
+ */
 
 export async function deleteProductAction(id: number) {
-  const response = await fetch(`${API_BASE_URL}/products/${id}`, {
-    method: 'DELETE',
-  });
+  const response = await fetch(API_URLS.PRODUCT_DETAIL(id), createDeleteRequest(API_URLS.PRODUCT_DETAIL(id)));
   
   if (!response.ok) {
-    throw new Error('Ошибка при удалении товара');
+    throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.DELETE_FAILED);
   }
   
-  // Обновляем кеш страницы продуктов
-  revalidatePath('/products');
+  revalidatePath(REVALIDATION_PATHS.PRODUCTS);
   
   return true;
 }
 
 export async function updateProductAction(id: number, updates: Partial<Product>) {
-  const response = await fetch(`${API_BASE_URL}/products/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(updates),
-  });
+  const response = await fetch(API_URLS.PRODUCT_DETAIL(id), createPatchRequest(API_URLS.PRODUCT_DETAIL(id), updates));
   
   if (!response.ok) {
-    throw new Error('Ошибка при обновлении товара');
+    throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.UPDATE_FAILED);
   }
   
   const data = await response.json();
   
-  // Валидация ответа
   const validationResult = ProductSchema.safeParse(data);
   
   if (!validationResult.success) {
-    console.error('Ошибка валидации обновленного товара:', validationResult.error);
-    throw new Error('Неверный формат данных обновленного товара');
+    throw ErrorHandler.validationError(ERROR_MESSAGES.INVALID_UPDATED_PRODUCT_FORMAT, validationResult.error);
   }
   
-  // Обновляем кеш страницы продуктов и конкретного товара
-  revalidatePath('/products');
-  revalidatePath(`/products/${id}`);
+  revalidatePath(REVALIDATION_PATHS.PRODUCTS);
+  revalidatePath(REVALIDATION_PATHS.PRODUCT_DETAIL(id));
   
   return validationResult.data;
 }
 
 export async function createProductAction(newProduct: Partial<Product>) {
-  const response = await fetch(`${API_BASE_URL}/products`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(newProduct),
-  });
+  const response = await fetch(API_URLS.PRODUCTS, createPostRequest(API_URLS.PRODUCTS, newProduct));
 
   if (!response.ok) {
-    throw new Error('Ошибка при создании товара');
+    throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.CREATE_FAILED);
   }
 
   const data = await response.json();
   const validationResult = ProductSchema.safeParse(data);
   if (!validationResult.success) {
-    console.error('Ошибка валидации созданного товара:', validationResult.error);
-    throw new Error('Неверный формат данных созданного товара');
+    throw ErrorHandler.validationError(ERROR_MESSAGES.INVALID_CREATED_PRODUCT_FORMAT, validationResult.error);
   }
 
-  revalidatePath('/products');
+  revalidatePath(REVALIDATION_PATHS.PRODUCTS);
   return validationResult.data;
 }

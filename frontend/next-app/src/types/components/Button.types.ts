@@ -1,6 +1,6 @@
 export interface ButtonProps {
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "edit" | "back" | "save" | "delete" | "cancel";
+  variant?: "primary" | "secondary" | "edit" | "add" | "back" | "save" | "delete" | "cancel";
   size?: "sm" | "md" | "lg";
   className?: string;
   disabled?: boolean;

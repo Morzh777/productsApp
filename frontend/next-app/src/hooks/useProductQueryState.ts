@@ -7,6 +7,12 @@ import type { ProductQueryState as ProductQueryStateType } from "@/types/hooks/P
 
 export type ProductQueryState = ProductQueryStateType;
 
+/**
+ * Хук для управления состоянием фильтров и сортировки товаров через URL
+ * 
+ * Синхронизирует состояние поиска, категорий и сортировки с URL параметрами.
+ * Позволяет сохранять состояние при обновлении страницы и делиться ссылками.
+ */
 export function useProductQueryState(
   defaults?: Partial<
     Pick<ProductQueryState, "searchQuery" | "selectedCategory" | "sortBy">
@@ -15,6 +21,9 @@ export function useProductQueryState(
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  /**
+   * Получает значение из URL параметров с fallback
+   */
   const getInitial = <T extends string>(key: string, fallback: T): T => {
     const v = searchParams?.get(key);
     return (v as T) ?? fallback;
@@ -34,12 +43,19 @@ export function useProductQueryState(
     "price-desc",
     "rating",
   ];
+  
+  /**
+   * Инициализация сортировки с валидацией допустимых значений
+   */
   const initialSort = ((): SortBy => {
     const v = defaults?.sortBy ?? (searchParams?.get("sort") as SortBy | null);
     return v && allowedSort.includes(v) ? v : "newest";
   })();
   const [sortBy, setSortBy] = useState<SortBy>(initialSort);
 
+  /**
+   * Синхронизирует состояние с URL параметрами при изменениях
+   */
   useEffect(() => {
     const current = searchParams?.toString() ?? "";
     const params = new URLSearchParams(current);
@@ -47,7 +63,7 @@ export function useProductQueryState(
     else params.delete("q");
     if (selectedCategory) params.set("category", selectedCategory);
     else params.delete("category");
-    if (sortBy) params.set("sort", sortBy);
+    if (sortBy && sortBy !== "newest") params.set("sort", sortBy);
     else params.delete("sort");
     const next = params.toString();
     if (next !== current) {

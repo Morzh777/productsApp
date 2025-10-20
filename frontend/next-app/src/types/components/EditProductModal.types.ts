@@ -6,4 +6,5 @@ export interface EditProductModalProps {
   onClose: () => void;
   onSave?: (updatedProduct: Partial<Product>) => Promise<Product>;
   onDelete?: (productId: number) => Promise<void>;
+  categories?: string[];
 }

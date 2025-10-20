@@ -3,8 +3,24 @@
 import Image from "next/image";
 import type { StarRatingProps } from "@/types/components/StarRating.types";
 
-export function StarRating({ rating, count, maxRating = 5 }: StarRatingProps) {
+/**
+ * Компонент звездного рейтинга
+ * 
+ * Отображает рейтинг товара в виде звезд с поддержкой полных и половинных звезд,
+ * а также числового значения рейтинга и количества отзывов.
+ * Использует пиксельные изображения звезд для точного отображения.
+ */
+export function StarRating({ rating, count }: StarRatingProps) {
+  /**
+   * Количество полных звезд для отображения
+   * Вычисляется как целая часть рейтинга
+   */
   const fullStars = Math.floor(rating);
+  
+  /**
+   * Определяет, нужно ли отображать половинную звезду
+   * Проверяет наличие дробной части в рейтинге
+   */
   const hasHalfStar = rating % 1 !== 0;
 
   return (

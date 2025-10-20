@@ -7,13 +7,24 @@ import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { ProductForm } from "@/components/ui/form/ProductForm";
 import { DeleteConfirmModal } from "@/components/ui/modal/DeleteModal";
 import { updateProductAction, deleteProductAction } from "@/app/products/actions/products";
+import { ErrorHandler } from "@/config/errors";
 
+/**
+ * Модальное окно редактирования продукта
+ * 
+ * Предоставляет полный интерфейс для редактирования существующего товара
+ * с возможностью сохранения изменений и удаления продукта.
+ * 
+ * @param props - Пропсы компонента EditProductModalProps
+ * @returns JSX элемент модального окна редактирования продукта
+ */
 export function EditProductModal({
   product,
   isOpen,
   onClose,
   onSave,
   onDelete,
+  categories = [],
 }: EditProductModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -22,7 +33,7 @@ export function EditProductModal({
   const handleSave = async (formData: Partial<Product>): Promise<Product> => {
     setIsLoading(true);
     try {
-      if (!product) throw new Error("Нет продукта");
+      if (!product) throw ErrorHandler.serverError("Нет продукта для редактирования");
       const fd = new FormData();
       if (formData.title !== undefined) fd.append("title", String(formData.title));
       if (formData.price !== undefined) fd.append("price", String(formData.price));
@@ -42,7 +53,7 @@ export function EditProductModal({
       onClose();
       return savedProduct;
     } catch (error) {
-      console.error("Ошибка при сохранении:", error);
+      ErrorHandler.logError(ErrorHandler.handleUnknownError(error), "handleSave");
       throw error;
     } finally {
       setIsLoading(false);
@@ -66,7 +77,7 @@ export function EditProductModal({
       setShowDeleteConfirm(false);
       onClose();
     } catch (error) {
-      console.error("Ошибка при удалении:", error);
+      ErrorHandler.logError(ErrorHandler.handleUnknownError(error), "handleDelete");
     } finally {
       setIsDeleting(false);
     }
@@ -106,6 +117,7 @@ export function EditProductModal({
               onDelete={handleDelete}
               isLoading={isLoading}
               isDeleting={isDeleting}
+              categories={categories}
             />
           </DialogPanel>
         </div>

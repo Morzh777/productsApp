@@ -1,56 +1,17 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import {
   CreateProductSchema,
   UpdateProductSchema,
 } from "@/shared/schemas/product.schema";
+import { API_URLS } from "@/config/routes";
+import { createPostRequest, createPatchRequest, createDeleteRequest } from "@/config/api-utils";
+import { ErrorHandler, ERROR_MESSAGES } from "@/config/errors";
 
-const API_BASE_URL = "http://localhost:3002/api";
-
-// Создание товара
-export async function createProductAction(formData: FormData) {
-  const rawData = {
-    title: formData.get("title") as string,
-    price: Number(formData.get("price")),
-    description: (formData.get("description") as string) || undefined,
-    image: (formData.get("image") as string) || undefined,
-    category: formData.get("category") as string,
-    rating: formData.get("rating") ? Number(formData.get("rating")) : undefined,
-  };
-
-  // Валидация данных
-  const validationResult = CreateProductSchema.safeParse(rawData);
-
-  if (!validationResult.success) {
-    throw new Error('Ошибка валидации данных');
-  }
-
-  const data = validationResult.data;
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/products`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      throw new Error("Ошибка при создании товара");
-    }
-
-    revalidatePath("/products");
-  } catch (error) {
-    console.error("Ошибка при создании товара:", error);
-    throw new Error("Не удалось создать товар");
-  }
-}
-
-// Обновление товара
-export async function updateProductAction(id: number, formData: FormData) {
-  const rawData = {
+// Утилита для извлечения данных из FormData
+function extractProductData(formData: FormData) {
+  return {
     title: (formData.get("title") as string) || undefined,
     price: formData.get("price") ? Number(formData.get("price")) : undefined,
     description: (formData.get("description") as string) || undefined,
@@ -58,11 +19,41 @@ export async function updateProductAction(id: number, formData: FormData) {
     category: (formData.get("category") as string) || undefined,
     rating: formData.get("rating") ? Number(formData.get("rating")) : undefined,
   };
+}
+
+// Создание товара
+export async function createProductAction(formData: FormData) {
+  const rawData = extractProductData(formData);
+
+  // Валидация данных
+  const validationResult = CreateProductSchema.safeParse(rawData);
+
+  if (!validationResult.success) {
+    throw ErrorHandler.validationError(ERROR_MESSAGES.VALIDATION_FAILED, validationResult.error);
+  }
+
+  const data = validationResult.data;
+
+  try {
+    const response = await fetch(API_URLS.PRODUCTS, createPostRequest(API_URLS.PRODUCTS, data));
+
+    if (!response.ok) {
+      throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.CREATE_FAILED);
+    }
+  } catch (error) {
+    ErrorHandler.logError(ErrorHandler.handleUnknownError(error), "createProductAction");
+    throw ErrorHandler.serverError(ERROR_MESSAGES.CREATE_FAILED);
+  }
+}
+
+// Обновление товара
+export async function updateProductAction(id: number, formData: FormData) {
+  const rawData = extractProductData(formData);
 
   // Убираем пустые поля
   const filteredData = Object.fromEntries(
     Object.entries(rawData).filter(
-      ([_, value]) => value !== undefined && value !== ""
+      ([, value]) => value !== undefined && value !== ""
     )
   );
 
@@ -70,46 +61,43 @@ export async function updateProductAction(id: number, formData: FormData) {
   const validationResult = UpdateProductSchema.safeParse(filteredData);
 
   if (!validationResult.success) {
-    throw new Error('Ошибка валидации данных');
+    throw ErrorHandler.validationError(ERROR_MESSAGES.VALIDATION_FAILED, validationResult.error);
   }
 
   const data = validationResult.data;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+    const response = await fetch(API_URLS.PRODUCT_DETAIL(id), {
+      ...createPatchRequest(API_URLS.PRODUCT_DETAIL(id), data)
     });
 
     if (!response.ok) {
-      throw new Error("Ошибка при обновлении товара");
+      throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.UPDATE_FAILED);
     }
 
-    revalidatePath("/products");
-    revalidatePath(`/products/${id}`);
+    // Сбрасываем кеш при редактировании товара
+    console.log('🗑️ Сброс кеша: products, categories, product-' + id);
+    revalidateTag('products');
+    revalidateTag('categories');
+    revalidateTag(`product-${id}`);
   } catch (error) {
-    console.error("Ошибка при обновлении товара:", error);
-    throw new Error("Не удалось обновить товар");
+    ErrorHandler.logError(ErrorHandler.handleUnknownError(error), "updateProductAction");
+    throw ErrorHandler.serverError(ERROR_MESSAGES.UPDATE_FAILED);
   }
 }
 
 // Удаление товара
 export async function deleteProductAction(id: number) {
   try {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
-      method: "DELETE",
+    const response = await fetch(API_URLS.PRODUCT_DETAIL(id), {
+      ...createDeleteRequest(API_URLS.PRODUCT_DETAIL(id))
     });
 
     if (!response.ok) {
-      throw new Error("Ошибка при удалении товара");
+      throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.DELETE_FAILED);
     }
-
-    revalidatePath("/products");
   } catch (error) {
-    console.error("Ошибка при удалении товара:", error);
-    throw new Error("Не удалось удалить товар");
+    ErrorHandler.logError(ErrorHandler.handleUnknownError(error), "deleteProductAction");
+    throw ErrorHandler.serverError(ERROR_MESSAGES.DELETE_FAILED);
   }
 }

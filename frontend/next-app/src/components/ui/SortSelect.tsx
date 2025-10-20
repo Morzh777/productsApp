@@ -2,20 +2,22 @@
 
 import Image from "next/image";
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
+import { SORT_MESSAGES } from "@/config/ui-messages";
+import type { SortSelectProps, SortOption } from "@/types/components/SortSelect.types";
 
-export interface SortOption {
-  value: string;
-  label: string;
-}
+export { type SortOption };
 
-interface SortSelectProps {
-  value: string;
-  onChange: (value: string) => void;
-  options: SortOption[];
-  label?: string;
-}
-
-export function SortSelect({ value, onChange, options, label = "Сортировать:" }: SortSelectProps) {
+/**
+ * Компонент выбора сортировки
+ * 
+ * Предоставляет интерфейс для выбора критерия сортировки товаров
+ * с использованием Headless UI Listbox для доступности и правильного поведения.
+ * Отображает текущий выбранный вариант и выпадающий список опций.
+ */
+export function SortSelect({ value, onChange, options, label = SORT_MESSAGES.SORT_BY }: SortSelectProps) {
+  /**
+   * Определение текущего лейбла для отображения
+   */
   const currentLabel = options.find(o => o.value === value)?.label ?? options[0]?.label ?? "";
 
   return (
@@ -43,5 +45,3 @@ export function SortSelect({ value, onChange, options, label = "Сортиров
     </div>
   );
 }
-
-

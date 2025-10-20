@@ -5,16 +5,29 @@ import type { Product } from "@/shared/schemas/product.schema";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { createProductAction } from "@/app/products/actions/products";
 import { ProductForm } from "@/components/ui/form/ProductForm";
+import type { CreateProductModalProps } from "@/types/components/CreateProductModal.types";
 
-interface CreateProductModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  categories?: string[];
-}
-
+/**
+ * Модальное окно для создания нового продукта
+ * 
+ * Предоставляет интерфейс для добавления нового товара с использованием
+ * декомпозированной формы ProductForm и интеграцией с server actions.
+ * 
+ * @param props - Пропсы компонента CreateProductModalProps
+ * @returns JSX элемент модального окна создания продукта
+ */
 export function CreateProductModal({ isOpen, onClose, categories = [] }: CreateProductModalProps) {
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * Обработчик создания нового продукта
+   * 
+   * Преобразует данные формы в FormData для server action,
+   * выполняет создание продукта и закрывает модальное окно.
+   * 
+   * @param formData - Данные формы продукта
+   * @returns Promise с созданным продуктом
+   */
   const handleCreate = async (formData: Partial<Product>): Promise<Product> => {
     setIsLoading(true);
     try {
