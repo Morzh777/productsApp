@@ -35,5 +35,8 @@
     "test-task"
   ],
   "author": "Morzh777",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@heroui/button": "^2.2.27"
+  }
 }
