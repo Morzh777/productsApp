@@ -1,10 +1,10 @@
 # Products App - Менеджер товаров
 
-React-приложение для управления товарами 
+Полнофункциональное React-приложение для управления товарами с современной архитектурой и декомпозированными компонентами.
 
 ## Технологический стек
 
-**Frontend:** Next.js 15, TypeScript, Tailwind CSS, Server Actions, Zod  
+**Frontend:** Next.js 15, TypeScript, Tailwind CSS, Server Actions, Zod, Headless UI  
 **Backend:** NestJS, TypeScript, Prisma, PostgreSQL, Zod, Swagger
 
 ## База данных
@@ -31,10 +31,14 @@ cd productsApp
 
 ## Функциональность
 
-- ✅ **Список товаров** с сортировкой по цене и рейтингу
-- ✅ **Добавление товаров** с валидацией форм
-- ✅ **Редактирование и удаление** товаров
+- ✅ **Список товаров** с сортировкой по цене, рейтингу и дате
+- ✅ **Добавление товаров** с валидацией форм и модальными окнами
+- ✅ **Редактирование и удаление** товаров с подтверждением
+- ✅ **Фильтрация по категориям** с интерактивными тегами
+- ✅ **Детальная страница товара** с полной информацией
 - ✅ **Responsive дизайн** для всех устройств
+- ✅ **Декомпозированная архитектура** с переиспользуемыми компонентами
+- ✅ **Централизованная обработка ошибок** и валидация
 - ✅ **Swagger документация** API
 
 ## Структура проекта
@@ -42,8 +46,7 @@ cd productsApp
 ```
 productsApp/
 ├── frontend/next-app/     # Next.js приложение
-├── backend/nest-api/      # NestJS API
-└── guides/               # Документация
+└── backend/nest-api/      # NestJS API
 ```
 
 ## Переменные окружения
@@ -53,14 +56,14 @@ productsApp/
 ### Backend (.env)
 ```env
 # Подключение к облачной базе данных Neon
-DATABASE_URL="postgresql://neondb_owner:npg_vGY5fHwSoqZ9@ep-wandering-king-agz11e0s-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+DATABASE_URL="postgresql://neondb_owner:npg_vGY5fHwSoqZ9@ep-wandering-king-agz11e0s-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connection_limit=5&pool_timeout=20&connect_timeout=60"
 PORT=3002
-NODE_ENV=development
+NODE_ENV=production
 ```
 
 ### Frontend (.env.local)
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:3002/api
+NEXT_PUBLIC_API_URL=http://localhost:8080/api
 ```
 
 ## Основные команды
@@ -76,13 +79,40 @@ cd backend/nest-api && npm run start:dev
 cd frontend/next-app && npm run dev
 ```
 
-## Особенности
+## Архитектура компонентов
 
+### UI Компоненты
+- **ProductCard** - карточка товара с изображением, рейтингом и ценой
+- **ProductImage** - изображение товара с fallback и поддержкой children
+- **StarRating** - звездный рейтинг с пиксельными изображениями
+- **CategoryTag** - интерактивный тег категории с фильтрацией
+- **SortSelect** - выбор сортировки с Headless UI
+- **Button** - универсальная кнопка с множественными вариантами
+
+### Формы и модальные окна
+- **ProductForm** - декомпозированная форма товара с валидацией
+- **CreateModal/EditModal/DeleteModal** - модальные окна для CRUD операций
+- **FormActions** - кнопки действий формы
+- **TextField/NumberField/TextAreaField/CategoryField** - переиспользуемые поля
+
+### Утилиты и хуки
+- **useProductForm** - хук для управления состоянием формы
+- **useProductQueryState** - синхронизация состояния с URL параметрами
+- **ErrorHandler** - централизованная обработка ошибок
+- **Zod схемы** - валидация данных на клиенте и сервере
+
+## Особенности архитектуры
+
+- **Декомпозированные компоненты** - модульная архитектура с переиспользуемыми частями
 - **Server Actions** с автоматической ревалидацией кеша
-- **Встроенное кеширование** через fetch API
-- **TypeScript** для полной типизации
+- **Централизованная валидация** через Zod схемы
+- **Кастомные хуки** для управления состоянием форм и URL параметров
+- **Headless UI** для доступных интерактивных компонентов
+- **Централизованная обработка ошибок** с типизированными исключениями
+- **TypeScript** для полной типизации на всех уровнях
 - **Prisma ORM** для работы с PostgreSQL
-- **Zod валидация** на клиенте и сервере
+- **Адаптивный дизайн** с Tailwind CSS
+- **Модальные окна** для создания, редактирования и удаления товаров
 
 ---
 
