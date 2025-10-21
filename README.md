@@ -57,8 +57,12 @@ start-frontend.bat
 git clone https://github.com/Morzh777/productsApp.git
 cd productsApp
 
-# Запустите все сервисы с Nginx (Unix-системы)
+# Запустите все сервисы с Nginx
+# Для Unix-систем (macOS, Linux):
 ./start-with-nginx.sh
+
+# Для Windows:
+start-with-nginx.bat
 ```
 
 **Frontend:** http://localhost:8080  
@@ -77,6 +81,13 @@ cd productsApp
 Если русский текст отображается некорректно в терминале:
 1. Убедитесь, что терминал поддерживает UTF-8 кодировку
 2. В PowerShell выполните: `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`
+
+### Требования для Windows с Nginx
+Для использования `start-with-nginx.bat`:
+1. **Установите Nginx** - скачайте с https://nginx.org/en/download.html
+2. **Или через Chocolatey:** `choco install nginx`
+3. **Добавьте Nginx в PATH** или используйте полный путь
+4. **Запустите от имени администратора** для корректной работы с портами
 
 > **Примечание:** Скрипты автоматически создают .env файлы и устанавливают зависимости при первом запуске. При работе без Nginx запускайте backend и frontend в разных терминалах.
 
