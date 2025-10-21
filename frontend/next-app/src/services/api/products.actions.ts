@@ -1,10 +1,11 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { revalidateTag, revalidatePath } from 'next/cache';
 import { ProductSchema, type Product } from '@/shared/schemas/product.schema';
-import { API_URLS } from '@/config/routes';
+import { API_URLS, ROUTES } from '@/config/routes';
 import { createPostRequest, createPatchRequest, createDeleteRequest } from '@/config/api-utils';
 import { ErrorHandler, ERROR_MESSAGES } from '@/config/errors';
+import { CACHE_TAGS, CACHE_TAG_FUNCTIONS } from '@/config/cache-tags';
 
 /**
  * Server Actions для работы с товарами
@@ -14,21 +15,40 @@ import { ErrorHandler, ERROR_MESSAGES } from '@/config/errors';
  */
 
 export async function deleteProductAction(id: number) {
-  const response = await fetch(API_URLS.PRODUCT_DETAIL(id), createDeleteRequest(API_URLS.PRODUCT_DETAIL(id)));
+  // Добавляем таймаут для запроса
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд
+
+  const response = await fetch(API_URLS.PRODUCT_DETAIL(id), {
+    ...createDeleteRequest(API_URLS.PRODUCT_DETAIL(id)),
+    signal: controller.signal,
+  });
+
+  clearTimeout(timeoutId);
   
   if (!response.ok) {
     throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.DELETE_FAILED);
   }
   
-  // Синхронное revalidation
-  revalidateTag('products');
-  revalidateTag('categories'); // Удаление товара может изменить список категорий
+  // Оптимизированное revalidation
+  revalidateTag(CACHE_TAGS.PRODUCTS);
+  revalidateTag(CACHE_TAGS.CATEGORIES); // Удаление товара может изменить список категорий
+  revalidatePath(ROUTES.HOME); // Обновляем главную страницу
   
-  return true;
+  return { success: true, deletedId: id };
 }
 
 export async function updateProductAction(id: number, updates: Partial<Product>) {
-  const response = await fetch(API_URLS.PRODUCT_DETAIL(id), createPatchRequest(API_URLS.PRODUCT_DETAIL(id), updates));
+  // Добавляем таймаут для запроса
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд
+
+  const response = await fetch(API_URLS.PRODUCT_DETAIL(id), {
+    ...createPatchRequest(API_URLS.PRODUCT_DETAIL(id), updates),
+    signal: controller.signal,
+  });
+
+  clearTimeout(timeoutId);
   
   if (!response.ok) {
     throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.UPDATE_FAILED);
@@ -42,20 +62,31 @@ export async function updateProductAction(id: number, updates: Partial<Product>)
     throw ErrorHandler.validationError(ERROR_MESSAGES.INVALID_UPDATED_PRODUCT_FORMAT, validationResult.error);
   }
   
-  // Обновляем только текущий товар и список товаров
-  revalidateTag(`product-${id}`);
-  revalidateTag('products');
+  // Оптимизированное revalidation
+  revalidateTag(CACHE_TAG_FUNCTIONS.product(id));
+  revalidateTag(CACHE_TAGS.PRODUCTS);
+  revalidatePath(ROUTES.HOME); // Обновляем главную страницу
   
   // Сбрасываем кеш категорий ТОЛЬКО если изменилась категория
   if (updates.category) {
-    revalidateTag('categories');
+    revalidateTag(CACHE_TAGS.CATEGORIES);
+    revalidateTag(CACHE_TAG_FUNCTIONS.category(updates.category)); // Обновляем кеш конкретной категории
   }
   
   return validationResult.data;
 }
 
 export async function createProductAction(newProduct: Partial<Product>) {
-  const response = await fetch(API_URLS.PRODUCTS, createPostRequest(API_URLS.PRODUCTS, newProduct));
+  // Добавляем таймаут для запроса
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд
+
+  const response = await fetch(API_URLS.PRODUCTS, {
+    ...createPostRequest(API_URLS.PRODUCTS, newProduct),
+    signal: controller.signal,
+  });
+
+  clearTimeout(timeoutId);
 
   if (!response.ok) {
     throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.CREATE_FAILED);
@@ -67,9 +98,15 @@ export async function createProductAction(newProduct: Partial<Product>) {
     throw ErrorHandler.validationError(ERROR_MESSAGES.INVALID_CREATED_PRODUCT_FORMAT, validationResult.error);
   }
 
-  // Синхронное revalidation
-  revalidateTag('products');
-  revalidateTag('categories'); // Новый товар может добавить новую категорию
+  // Оптимизированное revalidation - только необходимые теги
+  revalidateTag(CACHE_TAGS.PRODUCTS);
+  revalidatePath(ROUTES.HOME); // Обновляем главную страницу
+  
+  // Сбрасываем кеш категорий только если это новая категория
+  if (newProduct.category) {
+    revalidateTag(CACHE_TAGS.CATEGORIES);
+    revalidateTag(CACHE_TAG_FUNCTIONS.category(newProduct.category));
+  }
   
   return validationResult.data;
 }

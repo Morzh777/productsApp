@@ -38,7 +38,7 @@ export function ProductPageClient({ product, categories = [] }: ProductPageClien
    * Обработчик сохранения изменений товара
    * 
    * Выполняет обновление товара через API, обновляет локальное состояние
-   * и принудительно обновляет страницу для сброса браузерного кеша.
+   * и принудительно обновляет текущую страницу для сброса браузерного кеша.
    * 
    * @param updatedProduct - Обновленные данные товара
    * @returns Promise с сохраненным товаром
@@ -48,7 +48,7 @@ export function ProductPageClient({ product, categories = [] }: ProductPageClien
       const savedProduct = await updateProductAction(currentProduct.id, updatedProduct);
       setCurrentProduct(savedProduct);
       
-      // Принудительно обновляем страницу для сброса браузерного кеша
+      // Принудительно обновляем текущую страницу для сброса браузерного кеша
       router.refresh();
       
       return savedProduct;
@@ -62,15 +62,18 @@ export function ProductPageClient({ product, categories = [] }: ProductPageClien
    * Обработчик удаления товара
    * 
    * Выполняет удаление товара через API и перенаправляет пользователя
-   * на страницу списка товаров. Навигация происходит до удаления для
-   * лучшего UX.
+   * на страницу списка товаров с принудительным обновлением кеша.
    * 
    * @param productId - ID товара для удаления
    */
   const handleDelete = async (productId: number) => {
     try {
-      router.push(ROUTES.PRODUCTS);
+      // Сначала удаляем товар
       await deleteProductAction(productId);
+      
+      // Затем переходим на главную страницу с принудительным обновлением
+      router.push(ROUTES.PRODUCTS);
+      router.refresh(); // Принудительно обновляем страницу
     } catch (error) {
       ErrorHandler.logError(ErrorHandler.handleUnknownError(error), "handleDelete");
       throw error;

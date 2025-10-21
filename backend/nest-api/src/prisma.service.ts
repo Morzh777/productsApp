@@ -28,7 +28,7 @@ export class PrismaService
   }
 
   // Метод для безопасного выполнения запросов с retry
-  async safeQuery<T>(query: () => Promise<T>, retries = 3): Promise<T> {
+  async safeQuery<T>(query: () => Promise<T>, retries = 2): Promise<T> {
     for (let i = 0; i < retries; i++) {
       try {
         return await query();
@@ -52,9 +52,9 @@ export class PrismaService
           console.log(
             `🔄 Retry ${i + 1}/${retries} for database query (${errorMessage})`,
           );
-          // Exponential backoff: 1s, 2s, 4s
+          // Уменьшенные задержки: 200ms, 500ms
           await new Promise((resolve) =>
-            setTimeout(resolve, 1000 * Math.pow(2, i)),
+            setTimeout(resolve, 200 * Math.pow(2.5, i)),
           );
           continue;
         }

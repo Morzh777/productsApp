@@ -8,45 +8,57 @@ export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createProductDto: CreateProductDto) {
-    return this.prisma.product.create({
-      data: createProductDto,
+    return this.prisma.safeQuery(async () => {
+      return this.prisma.product.create({
+        data: createProductDto,
+      });
     });
   }
 
   async findAll() {
-    return this.prisma.product.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
+    return this.prisma.safeQuery(async () => {
+      return this.prisma.product.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
     });
   }
 
   async findOne(id: number) {
-    return this.prisma.product.findUnique({
-      where: { id },
+    return this.prisma.safeQuery(async () => {
+      return this.prisma.product.findUnique({
+        where: { id },
+      });
     });
   }
 
   async update(id: number, updateProductDto: UpdateProductDto) {
-    return this.prisma.product.update({
-      where: { id },
-      data: updateProductDto,
+    return this.prisma.safeQuery(async () => {
+      return this.prisma.product.update({
+        where: { id },
+        data: updateProductDto,
+      });
     });
   }
 
   async remove(id: number) {
-    await this.prisma.product.delete({
-      where: { id },
+    return this.prisma.safeQuery(async () => {
+      await this.prisma.product.delete({
+        where: { id },
+      });
+      return { success: true };
     });
-    return { success: true };
   }
 
   async findByCategory(category: string) {
-    return this.prisma.product.findMany({
-      where: { category },
-      orderBy: {
-        createdAt: 'desc',
-      },
+    return this.prisma.safeQuery(async () => {
+      return this.prisma.product.findMany({
+        where: { category },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
     });
   }
 

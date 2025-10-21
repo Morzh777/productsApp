@@ -33,16 +33,19 @@ export function CreateProductModal({ isOpen, onClose, categories = [] }: CreateP
     try {
       // Сборка данных под server action (ожидает FormData)
       const fd = new FormData();
-      if (formData.title) fd.append("title", String(formData.title));
+      if (formData.title !== undefined) fd.append("title", String(formData.title));
       if (formData.price !== undefined) fd.append("price", String(formData.price));
-      if (formData.description) fd.append("description", String(formData.description));
-      if (formData.image) fd.append("image", String(formData.image));
-      if (formData.category) fd.append("category", String(formData.category));
+      if (formData.description !== undefined) fd.append("description", String(formData.description));
+      if (formData.image !== undefined) fd.append("image", String(formData.image));
+      if (formData.category !== undefined) fd.append("category", String(formData.category));
       if (formData.rating !== undefined) fd.append("rating", String(formData.rating));
+      
       await createProductAction(fd);
       const created = { ...(formData as Product), id: 0 } as Product;
       onClose();
       return created;
+    } catch (error) {
+      throw error;
     } finally {
       setIsLoading(false);
     }
