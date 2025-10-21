@@ -1,6 +1,9 @@
 @echo off
 setlocal enabledelayedexpansion
 
+REM Set UTF-8 encoding for Russian text
+chcp 65001 >nul 2>&1
+
 echo 🚀 Products App - Автоматическая установка для Windows
 echo ================================================
 
@@ -17,17 +20,53 @@ echo ✅ Node.js найден
 REM Check if nginx is installed
 nginx --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo 📦 Nginx не установлен. Установите Nginx вручную:
-    echo   1. Скачайте Nginx с https://nginx.org/en/download.html
-    echo   2. Распакуйте в C:\nginx
-    echo   3. Добавьте C:\nginx в PATH
-    echo   4. Запустите скрипт снова
+    echo 📦 Nginx не установлен. Пытаемся установить автоматически...
+    
+    REM Try Chocolatey first
+    choco --version >nul 2>&1
+    if %errorlevel% equ 0 (
+        echo 📦 Устанавливаем Nginx через Chocolatey...
+        choco install nginx -y
+        if %errorlevel% equ 0 (
+            echo ✅ Nginx установлен через Chocolatey
+            goto :nginx_installed
+        )
+    )
+    
+    REM Try winget if Chocolatey failed
+    winget --version >nul 2>&1
+    if %errorlevel% equ 0 (
+        echo 📦 Устанавливаем Nginx через winget...
+        winget install nginx.nginx
+        if %errorlevel% equ 0 (
+            echo ✅ Nginx установлен через winget
+            goto :nginx_installed
+        )
+    )
+    
+    REM If both failed, show manual instructions
+    echo ❌ Не удалось установить Nginx автоматически.
     echo.
-    echo 💡 Или используйте WSL для автоматической установки
+    echo 📦 Установите Nginx вручную одним из способов:
+    echo.
+    echo 1. Через Chocolatey:
+    echo    - Установите Chocolatey: https://chocolatey.org/install
+    echo    - Выполните: choco install nginx -y
+    echo.
+    echo 2. Через winget:
+    echo    - Выполните: winget install nginx.nginx
+    echo.
+    echo 3. Вручную:
+    echo    - Скачайте с https://nginx.org/en/download.html
+    echo    - Распакуйте в C:\nginx
+    echo    - Добавьте C:\nginx в PATH
+    echo.
+    echo После установки запустите скрипт снова.
     pause
     exit /b 1
 )
 
+:nginx_installed
 echo ✅ Nginx найден
 
 REM Install root dependencies
