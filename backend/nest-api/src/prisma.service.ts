@@ -33,15 +33,29 @@ export class PrismaService
       try {
         return await query();
       } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : JSON.stringify(error);
+
+        // Обрабатываем различные типы ошибок соединения
         if (
           error &&
           typeof error === 'object' &&
           'code' in error &&
-          error.code === 'P2024' &&
+          (error.code === 'P2024' || // Connection pool timeout
+            error.code === 'P1001' || // Can't reach database server
+            error.code === 'P1008' || // Operations timed out
+            errorMessage.includes('Closed') ||
+            errorMessage.includes('connection') ||
+            errorMessage.includes('timeout')) &&
           i < retries - 1
         ) {
-          // Connection pool timeout - ждем и повторяем
-          await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
+          console.log(
+            `🔄 Retry ${i + 1}/${retries} for database query (${errorMessage})`,
+          );
+          // Exponential backoff: 1s, 2s, 4s
+          await new Promise((resolve) =>
+            setTimeout(resolve, 1000 * Math.pow(2, i)),
+          );
           continue;
         }
         throw error;

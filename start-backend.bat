@@ -26,7 +26,7 @@ REM Проверяем наличие .env файла
 if not exist .env (
     echo 📝 Создаем .env файл...
            (
-               echo DATABASE_URL="postgresql://neondb_owner:npg_vGY5fHwSoqZ9@ep-wandering-king-agz11e0s-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connection_limit=50&pool_timeout=60&connect_timeout=60"
+               echo DATABASE_URL="postgresql://neondb_owner:npg_vGY5fHwSoqZ9@ep-wandering-king-agz11e0s-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connection_limit=100&pool_timeout=120&connect_timeout=120"
                echo PORT=3002
                echo NODE_ENV=production
            ) > .env

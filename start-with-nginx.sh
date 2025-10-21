@@ -35,7 +35,7 @@ cd backend/nest-api
 if [ ! -f .env ]; then
     echo "📝 Создаем .env файл..."
            cat > .env << EOF
-DATABASE_URL="postgresql://neondb_owner:npg_vGY5fHwSoqZ9@ep-wandering-king-agz11e0s-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connection_limit=50&pool_timeout=60&connect_timeout=60"
+DATABASE_URL="postgresql://neondb_owner:npg_vGY5fHwSoqZ9@ep-wandering-king-agz11e0s-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connection_limit=100&pool_timeout=120&connect_timeout=120"
 PORT=3002
 NODE_ENV=production
 EOF
