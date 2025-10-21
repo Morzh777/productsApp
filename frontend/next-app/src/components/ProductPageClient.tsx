@@ -48,8 +48,11 @@ export function ProductPageClient({ product, categories = [] }: ProductPageClien
       const savedProduct = await updateProductAction(currentProduct.id, updatedProduct);
       setCurrentProduct(savedProduct);
       
-      // Принудительно обновляем текущую страницу для сброса браузерного кеша
+      // Принудительно обновляем текущую страницу и главную страницу
       router.refresh();
+      
+      // Также обновляем главную страницу, чтобы там была актуальная цена
+      window.location.href = ROUTES.PRODUCTS;
       
       return savedProduct;
     } catch (error) {
