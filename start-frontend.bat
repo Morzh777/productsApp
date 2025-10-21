@@ -41,8 +41,12 @@ if not exist node_modules (
     call npm install
 )
 
-REM Запускаем в режиме разработки
+REM Собираем frontend
+echo 🔨 Собираем frontend...
+call npm run build
+
+REM Запускаем в режиме продакшена
 echo 🚀 Запускаем frontend на http://localhost:3000
 echo 🔗 Backend API: http://localhost:3002/api
 echo.
-call npm run dev:windows
+call npm run start

@@ -43,6 +43,10 @@ REM Генерируем Prisma клиент
 echo 🔧 Генерируем Prisma клиент...
 call npx prisma generate
 
+REM Собираем проект
+echo 🔨 Собираем backend...
+call npm run build
+
 REM Запускаем в режиме продакшена
 echo 🚀 Запускаем backend на http://localhost:3002
 echo 📚 Swagger доступен на http://localhost:3002/swagger

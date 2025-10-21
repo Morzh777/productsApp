@@ -37,6 +37,10 @@ fi
 echo "🔧 Генерируем Prisma клиент..."
 npx prisma generate
 
+# Собираем проект
+echo "🔨 Собираем backend..."
+npm run build
+
 # Запускаем в режиме продакшена
 echo "🚀 Запускаем backend на http://localhost:3002"
 echo "📚 Swagger доступен на http://localhost:3002/swagger"

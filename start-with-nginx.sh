@@ -52,6 +52,10 @@ fi
 echo "🔧 Генерируем Prisma клиент..."
 npx prisma generate
 
+# Собираем backend
+echo "🔨 Собираем backend..."
+npm run build
+
 # Запускаем backend в фоне
 npm run start:prod &
 BACKEND_PID=$!
@@ -87,6 +91,15 @@ if [ ! -d "node_modules" ]; then
     npm install
 fi
 
+# Собираем frontend
+echo "🔨 Собираем frontend..."
+npm run build
+
+# Запускаем frontend в режиме продакшена
+echo "🚀 Запускаем frontend..."
+npm run start &
+FRONTEND_PID=$!
+
 echo ""
 echo "🎉 Приложение запущено!"
 echo "🌐 Frontend: http://localhost:8080"
@@ -100,6 +113,7 @@ cleanup() {
     echo ""
     echo "🛑 Останавливаем приложение..."
     kill $BACKEND_PID 2>/dev/null
+    kill $FRONTEND_PID 2>/dev/null
     nginx -s stop
     echo "✅ Приложение остановлено"
     exit 0
@@ -108,5 +122,5 @@ cleanup() {
 # Перехватываем сигнал завершения
 trap cleanup SIGINT SIGTERM
 
-# Запускаем frontend
-npm run dev
+# Ждем завершения процессов
+wait

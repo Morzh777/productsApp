@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:windows": "next dev --no-turbo",
+    "dev:windows": "next dev",
     "build": "NODE_ENV=production next build",
     "start": "next start",
     "lint": "eslint",

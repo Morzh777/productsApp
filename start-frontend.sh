@@ -35,8 +35,12 @@ if [ ! -d "node_modules" ]; then
     npm install
 fi
 
-# Запускаем в режиме разработки
+# Собираем frontend
+echo "🔨 Собираем frontend..."
+npm run build
+
+# Запускаем в режиме продакшена
 echo "🚀 Запускаем frontend на http://localhost:3000"
 echo "🔗 Backend API: http://localhost:3002/api"
 echo ""
-npm run dev
+npm run start
