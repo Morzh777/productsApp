@@ -14,6 +14,13 @@ export class PrismaService
         },
       },
       log: ['query', 'info', 'warn', 'error'],
+      // Настройки connection pooling для предотвращения падения
+      __internal: {
+        engine: {
+          connectTimeout: 60000, // 60 секунд
+          poolTimeout: 20000,    // 20 секунд
+        },
+      },
     });
   }
 

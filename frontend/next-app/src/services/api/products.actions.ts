@@ -20,11 +20,13 @@ export async function deleteProductAction(id: number) {
     throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.DELETE_FAILED);
   }
   
-  // Эффективное revalidation через теги
+  // Сразу обновляем список товаров
   revalidateTag('products');
-  revalidateTag(`product-${id}`);
-  revalidateTag('categories'); // Сбрасываем кеш категорий при удалении товара
-  revalidatePath(REVALIDATION_PATHS.PRODUCTS);
+  
+  // С задержкой обновляем категории (удаление товара может изменить список категорий)
+  setTimeout(() => {
+    revalidateTag('categories');
+  }, 100);
   
   return true;
 }
@@ -44,12 +46,20 @@ export async function updateProductAction(id: number, updates: Partial<Product>)
     throw ErrorHandler.validationError(ERROR_MESSAGES.INVALID_UPDATED_PRODUCT_FORMAT, validationResult.error);
   }
   
-  // Эффективное revalidation через теги
-  revalidateTag('products');
+  // Сразу обновляем только текущий товар
   revalidateTag(`product-${id}`);
-  revalidateTag('categories'); // Сбрасываем кеш категорий при обновлении товара
-  revalidatePath(REVALIDATION_PATHS.PRODUCTS);
-  revalidatePath(REVALIDATION_PATHS.PRODUCT_DETAIL(id));
+  
+  // С задержкой обновляем список товаров
+  setTimeout(() => {
+    revalidateTag('products');
+  }, 50);
+  
+  // Если изменилась категория - обновляем с еще большей задержкой
+  if (updates.category) {
+    setTimeout(() => {
+      revalidateTag('categories');
+    }, 100);
+  }
   
   return validationResult.data;
 }
@@ -68,9 +78,13 @@ export async function createProductAction(newProduct: Partial<Product>) {
   }
 
 
+  // Сразу обновляем список товаров
   revalidateTag('products');
-  revalidateTag('categories'); // Сбрасываем кеш категорий при добавлении товара
-  revalidatePath(REVALIDATION_PATHS.PRODUCTS);
+  
+  // С задержкой обновляем категории (новый товар может добавить новую категорию)
+  setTimeout(() => {
+    revalidateTag('categories');
+  }, 100);
   
   return validationResult.data;
 }
