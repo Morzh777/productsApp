@@ -75,6 +75,83 @@ NODE_ENV=production
 NEXT_PUBLIC_API_URL=http://localhost:8080/api
 ```
 
+## Ручная установка
+
+Если автоматические скрипты не работают, можно установить проект вручную:
+
+### Требования
+- **Node.js 18+** - https://nodejs.org/
+- **Nginx** - https://nginx.org/en/download.html
+- **Git** - https://git-scm.com/
+
+### Установка зависимостей
+
+```bash
+# Клонируйте репозиторий
+git clone https://github.com/Morzh777/productsApp.git
+cd productsApp
+
+# Установите корневые зависимости
+npm install
+
+# Установите backend зависимости
+cd backend/nest-api
+npm install
+
+# Установите frontend зависимости
+cd ../../frontend/next-app
+npm install
+```
+
+### Настройка окружения
+
+#### Backend (.env)
+```env
+DATABASE_URL="postgresql://neondb_owner:npg_vGY5fHwSoqZ9@ep-wandering-king-agz11e0s-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connection_limit=5&pool_timeout=20&connect_timeout=60"
+PORT=3002
+NODE_ENV=production
+```
+
+#### Frontend (.env.local)
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8080/api
+```
+
+### Настройка базы данных
+
+```bash
+cd backend/nest-api
+
+# Генерация Prisma клиента
+npx prisma generate
+```
+
+> **Примечание:** База данных уже настроена в облаке Neon, миграции выполнять не нужно.
+
+### Настройка Nginx
+
+1. **Скачайте Nginx** с https://nginx.org/en/download.html
+2. **Распакуйте** в `C:\nginx` (Windows) или `/usr/local/nginx` (Unix)
+3. **Скопируйте** `nginx.conf` из корня проекта в папку конфигурации Nginx
+4. **Добавьте Nginx в PATH** или используйте полный путь
+
+### Запуск приложения
+
+```bash
+# Сборка backend
+cd backend/nest-api
+npm run build
+npm run start:prod &
+
+# Сборка и запуск frontend
+cd ../../frontend/next-app
+npm run build
+npm run start &
+
+# Запуск Nginx
+nginx -c /path/to/nginx.conf
+```
+
 ## Основные команды
 
 ```bash

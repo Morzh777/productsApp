@@ -137,10 +137,6 @@ REM Generate Prisma client
 echo 🔧 Генерируем Prisma клиент...
 call npx prisma generate
 
-REM Run migrations
-echo 🗄️  Выполняем миграции базы данных...
-call npx prisma migrate deploy
-
 REM Build backend
 echo 🏗️  Сборка backend (production)...
 call npm run build
@@ -198,7 +194,7 @@ echo.
 echo 📋 Что было сделано:
 echo   ✅ Установлены все зависимости
 echo   ✅ Настроены .env файлы
-echo   ✅ Выполнены миграции базы данных
+echo   ✅ Сгенерирован Prisma клиент
 echo   ✅ Настроен и запущен Nginx
 echo.
 echo 🚀 Запускаем приложение...
