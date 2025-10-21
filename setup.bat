@@ -44,7 +44,52 @@ if %errorlevel% neq 0 (
         )
     )
     
-    REM If both failed, show manual instructions
+    REM Try direct download and installation
+    echo 📦 Скачиваем и устанавливаем Nginx напрямую...
+    
+    REM Check if curl is available
+    curl --version >nul 2>&1
+    if %errorlevel% neq 0 (
+        echo ❌ curl не найден. Установите curl или используйте браузер для скачивания.
+        goto :manual_install
+    )
+    
+    REM Download Nginx
+    echo 📥 Скачиваем Nginx...
+    curl -L -o nginx.zip https://nginx.org/download/nginx-1.24.0.zip
+    if %errorlevel% neq 0 (
+        echo ❌ Ошибка при скачивании Nginx
+        goto :manual_install
+    )
+    
+    REM Check if PowerShell is available for extraction
+    powershell -Command "Expand-Archive -Path nginx.zip -DestinationPath C:\nginx -Force" >nul 2>&1
+    if %errorlevel% neq 0 (
+        echo ❌ Ошибка при распаковке Nginx
+        goto :manual_install
+    )
+    
+    REM Add to PATH
+    echo 🔧 Добавляем Nginx в PATH...
+    setx PATH "%PATH%;C:\nginx" >nul 2>&1
+    
+    REM Clean up
+    del nginx.zip >nul 2>&1
+    
+    REM Refresh PATH for current session
+    set PATH=%PATH%;C:\nginx
+    
+    REM Test installation
+    nginx --version >nul 2>&1
+    if %errorlevel% equ 0 (
+        echo ✅ Nginx установлен напрямую
+        goto :nginx_installed
+    ) else (
+        echo ❌ Nginx не найден после установки
+        goto :manual_install
+    )
+    
+    :manual_install
     echo ❌ Не удалось установить Nginx автоматически.
     echo.
     echo 📦 Установите Nginx вручную одним из способов:
