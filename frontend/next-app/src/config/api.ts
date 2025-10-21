@@ -106,7 +106,7 @@ export const MIME_TYPES = {
  */
 export const CACHE_CONFIG = {
   /** Время revalidation в секундах */
-  REVALIDATE_TIME: 60, // секунды
+  REVALIDATE_TIME: 300, // 5 минут вместо 1 минуты
 } as const;
 
 /**

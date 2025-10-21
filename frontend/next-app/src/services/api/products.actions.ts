@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { ProductSchema, type Product } from '@/shared/schemas/product.schema';
 import { API_URLS, REVALIDATION_PATHS } from '@/config/routes';
 import { createPostRequest, createPatchRequest, createDeleteRequest } from '@/config/api-utils';
@@ -20,6 +20,10 @@ export async function deleteProductAction(id: number) {
     throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.DELETE_FAILED);
   }
   
+  // Эффективное revalidation через теги
+  revalidateTag('products');
+  revalidateTag(`product-${id}`);
+  revalidateTag('categories'); // Сбрасываем кеш категорий при удалении товара
   revalidatePath(REVALIDATION_PATHS.PRODUCTS);
   
   return true;
@@ -40,6 +44,10 @@ export async function updateProductAction(id: number, updates: Partial<Product>)
     throw ErrorHandler.validationError(ERROR_MESSAGES.INVALID_UPDATED_PRODUCT_FORMAT, validationResult.error);
   }
   
+  // Эффективное revalidation через теги
+  revalidateTag('products');
+  revalidateTag(`product-${id}`);
+  revalidateTag('categories'); // Сбрасываем кеш категорий при обновлении товара
   revalidatePath(REVALIDATION_PATHS.PRODUCTS);
   revalidatePath(REVALIDATION_PATHS.PRODUCT_DETAIL(id));
   
@@ -59,6 +67,10 @@ export async function createProductAction(newProduct: Partial<Product>) {
     throw ErrorHandler.validationError(ERROR_MESSAGES.INVALID_CREATED_PRODUCT_FORMAT, validationResult.error);
   }
 
+
+  revalidateTag('products');
+  revalidateTag('categories'); // Сбрасываем кеш категорий при добавлении товара
   revalidatePath(REVALIDATION_PATHS.PRODUCTS);
+  
   return validationResult.data;
 }

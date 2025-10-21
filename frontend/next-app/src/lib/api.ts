@@ -12,11 +12,9 @@ import { MIME_TYPES, HTTP_HEADERS } from '@/config/api';
  */
 
 export async function getProducts() {
-  console.log('🔄 API: Запрос товаров (getProducts) - Stack:', new Error().stack?.split('\n')[2]);
-  console.log('🔄 API: Время запроса:', new Date().toISOString());
   const response = await fetch(API_URLS.PRODUCTS, {
     ...createGetRequest(API_URLS.PRODUCTS),
-    next: { revalidate: 60, tags: ['products'] }
+    next: { revalidate: 300, tags: ['products'] } // 5 минут кеширования
   });
   
   if (!response.ok) {
@@ -35,10 +33,9 @@ export async function getProducts() {
 }
 
 export async function getCategories() {
-  console.log('🔄 API: Запрос категорий (getCategories) - Stack:', new Error().stack?.split('\n')[2]);
   const response = await fetch(API_URLS.PRODUCT_CATEGORIES, {
     ...createGetRequest(API_URLS.PRODUCT_CATEGORIES),
-    next: { revalidate: 60, tags: ['categories'] }
+    next: { revalidate: 600, tags: ['categories'] } // 10 минут кеширования
   });
 
   if (!response.ok) {
@@ -58,7 +55,7 @@ export async function getCategories() {
 export async function getProduct(id: number) {
   const response = await fetch(API_URLS.PRODUCT_DETAIL(id), {
     ...createGetRequest(API_URLS.PRODUCT_DETAIL(id)),
-    next: { revalidate: 60, tags: ['products', `product-${id}`] }
+    next: { revalidate: 300, tags: ['products', `product-${id}`] } // 5 минут кеширования
   });
   
   if (!response.ok) {
@@ -94,7 +91,10 @@ export async function getProduct(id: number) {
 }
 
 export async function getProductsByCategory(category: string) {
-  const response = await fetch(API_URLS.PRODUCTS_BY_CATEGORY(category), createGetRequest(API_URLS.PRODUCTS_BY_CATEGORY(category)));
+  const response = await fetch(API_URLS.PRODUCTS_BY_CATEGORY(category), {
+    ...createGetRequest(API_URLS.PRODUCTS_BY_CATEGORY(category)),
+    next: { revalidate: 300, tags: ['products', `category-${category}`] } // 5 минут кеширования
+  });
   
   if (!response.ok) {
     throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.PRODUCTS_NOT_FOUND);
