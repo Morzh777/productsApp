@@ -28,9 +28,11 @@ export class PrismaService
   }
 
   // Метод для безопасного выполнения запросов с retry
-  async safeQuery<T>(query: () => Promise<T>, retries = 2): Promise<T> {
+  async safeQuery<T>(query: () => Promise<T>, retries = 3): Promise<T> {
     for (let i = 0; i < retries; i++) {
       try {
+        // Проверяем соединение перед запросом
+        await this.$queryRaw`SELECT 1`;
         return await query();
       } catch (error: unknown) {
         const errorMessage =
@@ -52,9 +54,19 @@ export class PrismaService
           console.log(
             `🔄 Retry ${i + 1}/${retries} for database query (${errorMessage})`,
           );
-          // Уменьшенные задержки: 200ms, 500ms
+          
+          // Переподключаемся к базе данных
+          try {
+            await this.$disconnect();
+            await this.$connect();
+            console.log('✅ Database reconnected');
+          } catch (reconnectError) {
+            console.log('❌ Failed to reconnect to database');
+          }
+          
+          // Увеличенные задержки: 500ms, 1s, 2s
           await new Promise((resolve) =>
-            setTimeout(resolve, 200 * Math.pow(2.5, i)),
+            setTimeout(resolve, 500 * Math.pow(2, i)),
           );
           continue;
         }

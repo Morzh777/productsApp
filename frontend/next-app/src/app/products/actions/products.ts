@@ -43,19 +43,18 @@ export async function createProductAction(formData: FormData) {
   const data = validationResult.data;
 
   try {
-    // Добавляем таймаут для запроса
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд
-
     const response = await fetch(API_URLS.PRODUCTS, {
       ...createPostRequest(API_URLS.PRODUCTS, data),
-      signal: controller.signal,
     });
-
-    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error('Create product error:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorText,
+        data
+      });
       throw ErrorHandler.handleHttpError(response.status, `${ERROR_MESSAGES.CREATE_FAILED}: ${errorText}`);
     }
 
@@ -74,6 +73,29 @@ export async function createProductAction(formData: FormData) {
     return result;
   } catch (error) {
     ErrorHandler.logError(ErrorHandler.handleUnknownError(error), "createProductAction");
+    
+    // Проверяем, не создался ли товар на самом деле (проверяем по названию)
+    try {
+      const checkResponse = await fetch(API_URLS.PRODUCTS);
+      if (checkResponse.ok) {
+        const products = await checkResponse.json();
+        const existingProduct = products.find((p: { title: string; price: number; category: string }) => 
+          p.title === data.title && 
+          p.price === data.price && 
+          p.category === data.category
+        );
+        
+        if (existingProduct) {
+          console.log('✅ Product was actually created, updating cache');
+          revalidateTag(CACHE_TAGS.PRODUCTS);
+          revalidatePath(ROUTES.HOME);
+          return existingProduct;
+        }
+      }
+    } catch {
+      console.log('Could not verify if product was created');
+    }
+    
     throw ErrorHandler.serverError(ERROR_MESSAGES.CREATE_FAILED);
   }
 }
@@ -99,16 +121,9 @@ export async function updateProductAction(id: number, formData: FormData) {
   const data = validationResult.data;
 
   try {
-    // Добавляем таймаут для запроса
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд
-
     const response = await fetch(API_URLS.PRODUCT_DETAIL(id), {
       ...createPatchRequest(API_URLS.PRODUCT_DETAIL(id), data),
-      signal: controller.signal,
     });
-
-    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.UPDATE_FAILED);
@@ -132,16 +147,9 @@ export async function updateProductAction(id: number, formData: FormData) {
 // Удаление товара
 export async function deleteProductAction(id: number) {
   try {
-    // Добавляем таймаут для запроса
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд
-
     const response = await fetch(API_URLS.PRODUCT_DETAIL(id), {
       ...createDeleteRequest(API_URLS.PRODUCT_DETAIL(id)),
-      signal: controller.signal,
     });
-
-    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.DELETE_FAILED);

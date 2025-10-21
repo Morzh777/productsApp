@@ -17,7 +17,7 @@ import { CACHE_TAGS, CACHE_TAG_FUNCTIONS } from '@/config/cache-tags';
 export async function deleteProductAction(id: number) {
   // Добавляем таймаут для запроса
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // Увеличиваем до 30 секунд
 
   const response = await fetch(API_URLS.PRODUCT_DETAIL(id), {
     ...createDeleteRequest(API_URLS.PRODUCT_DETAIL(id)),
@@ -41,7 +41,7 @@ export async function deleteProductAction(id: number) {
 export async function updateProductAction(id: number, updates: Partial<Product>) {
   // Добавляем таймаут для запроса
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // Увеличиваем до 30 секунд
 
   const response = await fetch(API_URLS.PRODUCT_DETAIL(id), {
     ...createPatchRequest(API_URLS.PRODUCT_DETAIL(id), updates),
@@ -77,16 +77,9 @@ export async function updateProductAction(id: number, updates: Partial<Product>)
 }
 
 export async function createProductAction(newProduct: Partial<Product>) {
-  // Добавляем таймаут для запроса
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд
-
   const response = await fetch(API_URLS.PRODUCTS, {
     ...createPostRequest(API_URLS.PRODUCTS, newProduct),
-    signal: controller.signal,
   });
-
-  clearTimeout(timeoutId);
 
   if (!response.ok) {
     throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.CREATE_FAILED);
