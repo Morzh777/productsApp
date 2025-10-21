@@ -69,14 +69,14 @@ if %errorlevel% neq 0 (
 :nginx_installed
 echo ✅ Nginx найден
 
-REM Install root dependencies
-echo 📦 Устанавливаем корневые зависимости...
-call npm install
+REM Install root dependencies (local installation)
+echo 📦 Устанавливаем корневые зависимости (локально)...
+call npm install --no-global
 
-REM Install backend dependencies
-echo 📦 Устанавливаем зависимости backend...
+REM Install backend dependencies (local installation)
+echo 📦 Устанавливаем зависимости backend (локально)...
 cd backend\nest-api
-call npm install
+call npm install --no-global
 
 REM Create backend .env file (production)
 echo ⚙️  Создаем .env файл для backend (production)...
@@ -102,10 +102,10 @@ call npm run build
 
 echo ✅ Backend настроен и готов к работе
 
-REM Install frontend dependencies
-echo 📦 Устанавливаем зависимости frontend...
+REM Install frontend dependencies (local installation)
+echo 📦 Устанавливаем зависимости frontend (локально)...
 cd ..\..\frontend\next-app
-call npm install
+call npm install --no-global
 
 REM Create frontend .env.local file
 echo ⚙️  Создаем .env.local файл для frontend...

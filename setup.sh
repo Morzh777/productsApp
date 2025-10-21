@@ -57,14 +57,14 @@ fi
 
 echo -e "${GREEN}✅ Nginx найден${NC}"
 
-# Install root dependencies
-echo -e "${YELLOW}📦 Устанавливаем корневые зависимости...${NC}"
-npm install
+# Install root dependencies (local installation)
+echo -e "${YELLOW}📦 Устанавливаем корневые зависимости (локально)...${NC}"
+npm install --no-global
 
-# Install backend dependencies
-echo -e "${YELLOW}📦 Устанавливаем зависимости backend...${NC}"
+# Install backend dependencies (local installation)
+echo -e "${YELLOW}📦 Устанавливаем зависимости backend (локально)...${NC}"
 cd backend/nest-api
-npm install
+npm install --no-global
 
 # Create backend .env file (production)
 echo -e "${YELLOW}⚙️  Создаем .env файл для backend (production)...${NC}"
@@ -90,10 +90,10 @@ npm run build
 
 echo -e "${GREEN}✅ Backend настроен и готов к работе${NC}"
 
-# Install frontend dependencies
-echo -e "${YELLOW}📦 Устанавливаем зависимости frontend...${NC}"
+# Install frontend dependencies (local installation)
+echo -e "${YELLOW}📦 Устанавливаем зависимости frontend (локально)...${NC}"
 cd ../../frontend/next-app
-npm install
+npm install --no-global
 
 # Create frontend .env.local file
 echo -e "${YELLOW}⚙️  Создаем .env.local файл для frontend...${NC}"
