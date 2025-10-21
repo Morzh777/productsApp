@@ -4,7 +4,6 @@ import { ProductsService } from './products.service';
 
 describe('ProductsController', () => {
   let controller: ProductsController;
-  let service: ProductsService;
 
   const mockProduct = {
     id: 1,
@@ -39,7 +38,6 @@ describe('ProductsController', () => {
     }).compile();
 
     controller = module.get<ProductsController>(ProductsController);
-    service = module.get<ProductsService>(ProductsService);
   });
 
   afterEach(() => {

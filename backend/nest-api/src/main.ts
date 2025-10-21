@@ -2,19 +2,19 @@ import { NestFactory } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { SERVER_CONFIG } from './config/app';
+import { CORS_CONFIG } from './config/app';
+import { SWAGGER_CONFIG } from './config/app';
+import { SWAGGER_ROUTES } from './config/routes';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // CORS настройка
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost',
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: CORS_CONFIG.ORIGINS,
+    methods: CORS_CONFIG.METHODS,
+    allowedHeaders: CORS_CONFIG.HEADERS,
   });
 
   // Глобальная валидация с Zod
@@ -22,19 +22,20 @@ async function bootstrap() {
 
   // Swagger документация
   const config = new DocumentBuilder()
-    .setTitle('Products API')
-    .setDescription('API для управления товарами')
-    .setVersion('1.0')
+    .setTitle(SWAGGER_CONFIG.TITLE)
+    .setDescription(SWAGGER_CONFIG.DESCRIPTION)
+    .setVersion(SWAGGER_CONFIG.VERSION)
     .addTag('products')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup(SWAGGER_ROUTES.MAIN, app, document);
 
-  await app.listen(process.env.PORT ?? 3002);
-  console.log(`Приложение запущено на порту ${process.env.PORT ?? 3002}`);
+  const port = process.env.PORT ?? SERVER_CONFIG.PORT;
+  await app.listen(port);
+  console.log(`Приложение запущено на порту ${port}`);
   console.log(
-    `Swagger документация: http://localhost:${process.env.PORT ?? 3002}/api`,
+    `Swagger документация: http://localhost:${port}${SWAGGER_ROUTES.MAIN}`,
   );
 }
 bootstrap().catch((error) => {

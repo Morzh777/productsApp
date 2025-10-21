@@ -48,7 +48,7 @@ start-frontend.bat
 
 **Frontend:** http://localhost:3000  
 **Backend API:** http://localhost:3002/api  
-**Swagger:** http://localhost:3002/swagger
+**Swagger:** http://localhost:3002/api
 
 ### Вариант 2: С Nginx (полная настройка)
 
@@ -67,7 +67,7 @@ start-with-nginx.bat
 
 **Frontend:** http://localhost:8080  
 **Backend API:** http://localhost:8080/api  
-**Swagger:** http://localhost:8080/swagger
+**Swagger:** http://localhost:8080/api
 
 ## Примечания для Windows
 
@@ -125,7 +125,11 @@ NODE_ENV=production
 
 ### Frontend (.env.local)
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:8080/api
+# Для работы без Nginx
+NEXT_PUBLIC_API_URL=http://localhost:3002/api
+
+# Для работы с Nginx
+# NEXT_PUBLIC_API_URL=http://localhost:8080/api
 ```
 
 ## Ручная установка
@@ -167,7 +171,11 @@ NODE_ENV=production
 
 #### Frontend (.env.local)
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:8080/api
+# Для работы без Nginx
+NEXT_PUBLIC_API_URL=http://localhost:3002/api
+
+# Для работы с Nginx
+# NEXT_PUBLIC_API_URL=http://localhost:8080/api
 ```
 
 ### Настройка базы данных

@@ -7,6 +7,9 @@ import { UpdateProductDto } from './dto/update-product.dto';
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Создает новый товар
+   */
   async create(createProductDto: CreateProductDto) {
     return this.prisma.safeQuery(async () => {
       return this.prisma.product.create({
@@ -15,6 +18,9 @@ export class ProductsService {
     });
   }
 
+  /**
+   * Получает все товары
+   */
   async findAll() {
     return this.prisma.safeQuery(async () => {
       return this.prisma.product.findMany({
@@ -25,6 +31,9 @@ export class ProductsService {
     });
   }
 
+  /**
+   * Получает товар по ID
+   */
   async findOne(id: number) {
     return this.prisma.safeQuery(async () => {
       return this.prisma.product.findUnique({
@@ -33,6 +42,9 @@ export class ProductsService {
     });
   }
 
+  /**
+   * Обновляет товар по ID
+   */
   async update(id: number, updateProductDto: UpdateProductDto) {
     return this.prisma.safeQuery(async () => {
       return this.prisma.product.update({
@@ -42,6 +54,9 @@ export class ProductsService {
     });
   }
 
+  /**
+   * Удаляет товар по ID
+   */
   async remove(id: number) {
     return this.prisma.safeQuery(async () => {
       await this.prisma.product.delete({
@@ -51,6 +66,9 @@ export class ProductsService {
     });
   }
 
+  /**
+   * Получает товары по категории
+   */
   async findByCategory(category: string) {
     return this.prisma.safeQuery(async () => {
       return this.prisma.product.findMany({
@@ -62,6 +80,9 @@ export class ProductsService {
     });
   }
 
+  /**
+   * Получает список всех категорий
+   */
   async getCategories() {
     return this.prisma.safeQuery(async () => {
       const rows = await this.prisma.product.findMany({

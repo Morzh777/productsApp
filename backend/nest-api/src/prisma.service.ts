@@ -1,5 +1,7 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { DATABASE_CONFIG } from './config/database';
+import { PRISMA_CONFIG } from './config/database';
 
 @Injectable()
 export class PrismaService
@@ -13,9 +15,8 @@ export class PrismaService
           url: process.env.DATABASE_URL,
         },
       },
-      log: ['query', 'info', 'warn', 'error'],
-      // Настройки для предотвращения падения при высокой нагрузке
-      errorFormat: 'pretty',
+      log: [...PRISMA_CONFIG.LOG_LEVELS],
+      errorFormat: PRISMA_CONFIG.ERROR_FORMAT,
     });
   }
 
@@ -27,8 +28,13 @@ export class PrismaService
     await this.$disconnect();
   }
 
-  // Метод для безопасного выполнения запросов с retry
-  async safeQuery<T>(query: () => Promise<T>, retries = 3): Promise<T> {
+  /**
+   * Метод для безопасного выполнения запросов с retry
+   */
+  async safeQuery<T>(
+    query: () => Promise<T>,
+    retries = DATABASE_CONFIG.MAX_RETRIES,
+  ): Promise<T> {
     for (let i = 0; i < retries; i++) {
       try {
         // Проверяем соединение перед запросом
@@ -43,36 +49,36 @@ export class PrismaService
           error &&
           typeof error === 'object' &&
           'code' in error &&
-          (error.code === 'P2024' || // Connection pool timeout
-            error.code === 'P1001' || // Can't reach database server
-            error.code === 'P1008' || // Operations timed out
-            errorMessage.includes('Closed') ||
-            errorMessage.includes('connection') ||
-            errorMessage.includes('timeout')) &&
+          (DATABASE_CONFIG.RETRY_ERROR_CODES.includes(
+            error.code as (typeof DATABASE_CONFIG.RETRY_ERROR_CODES)[number],
+          ) ||
+            DATABASE_CONFIG.RETRY_ERROR_KEYWORDS.some((keyword) =>
+              errorMessage.includes(keyword),
+            )) &&
           i < retries - 1
         ) {
           console.log(
-            `🔄 Retry ${i + 1}/${retries} for database query (${errorMessage})`,
+            `Повтор ${i + 1}/${retries} для запроса к базе данных (${errorMessage})`,
           );
-          
+
           // Переподключаемся к базе данных
           try {
             await this.$disconnect();
             await this.$connect();
-            console.log('✅ Database reconnected');
-          } catch (reconnectError) {
-            console.log('❌ Failed to reconnect to database');
+            console.log('База данных переподключена');
+          } catch {
+            console.log('Не удалось переподключиться к базе данных');
           }
-          
-          // Увеличенные задержки: 500ms, 1s, 2s
+
+          // Используем настроенные задержки
           await new Promise((resolve) =>
-            setTimeout(resolve, 500 * Math.pow(2, i)),
+            setTimeout(resolve, DATABASE_CONFIG.RETRY_DELAYS[i]),
           );
           continue;
         }
         throw error;
       }
     }
-    throw new Error('Max retries exceeded');
+    throw new Error('Превышено максимальное количество попыток');
   }
 }

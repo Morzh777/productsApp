@@ -21,12 +21,17 @@ import { ProductsService } from './products.service';
 import { CreateProductSchema } from '@/products/dto/create-product.dto';
 import { UpdateProductSchema } from '@/products/dto/update-product.dto';
 import { z } from 'zod';
+import { API_ROUTES } from '../config/routes';
+import { ERROR_MESSAGES } from '../config/errors';
 
 @ApiTags('products')
-@Controller('api/products')
+@Controller(API_ROUTES.PRODUCTS.replace('/api', ''))
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  /**
+   * Создает новый товар
+   */
   @Post()
   @ApiOperation({ summary: 'Создать новый товар' })
   @ApiResponse({ status: 201, description: 'Товар успешно создан' })
@@ -35,6 +40,9 @@ export class ProductsController {
     return this.productsService.create(createProductDto);
   }
 
+  /**
+   * Получает все товары или по категории
+   */
   @Get()
   @ApiOperation({ summary: 'Получить все товары' })
   @ApiResponse({ status: 200, description: 'Список товаров' })
@@ -50,6 +58,9 @@ export class ProductsController {
     return this.productsService.findAll();
   }
 
+  /**
+   * Получает список всех категорий
+   */
   @Get('categories')
   @ApiOperation({ summary: 'Получить список категорий' })
   @ApiResponse({ status: 200, description: 'Список строк категорий' })
@@ -57,6 +68,9 @@ export class ProductsController {
     return this.productsService.getCategories();
   }
 
+  /**
+   * Получает товар по ID
+   */
   @Get(':id')
   @ApiOperation({ summary: 'Получить товар по ID' })
   @ApiParam({ name: 'id', description: 'ID товара' })
@@ -65,11 +79,14 @@ export class ProductsController {
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const product = await this.productsService.findOne(id);
     if (!product) {
-      throw new NotFoundException(`Товар с ID ${id} не найден`);
+      throw new NotFoundException(ERROR_MESSAGES.PRODUCT_NOT_FOUND);
     }
     return product;
   }
 
+  /**
+   * Обновляет товар по ID
+   */
   @Patch(':id')
   @ApiOperation({ summary: 'Обновить товар' })
   @ApiParam({ name: 'id', description: 'ID товара' })
@@ -82,6 +99,9 @@ export class ProductsController {
     return this.productsService.update(id, updateProductDto);
   }
 
+  /**
+   * Удаляет товар по ID
+   */
   @Delete(':id')
   @ApiOperation({ summary: 'Удалить товар' })
   @ApiParam({ name: 'id', description: 'ID товара' })
