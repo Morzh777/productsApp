@@ -1,6 +1,10 @@
 @echo off
 setlocal enabledelayedexpansion
 
+REM Temporarily clean PATH for this script
+set "CLEAN_PATH=C:\Windows\System32;C:\Windows;C:\Program Files\Git\usr\bin;C:\Program Files\nodejs"
+set "PATH=%CLEAN_PATH%"
+
 REM Set UTF-8 encoding for Russian text
 chcp 65001 >nul 2>&1
 
