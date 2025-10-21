@@ -37,7 +37,7 @@ fi
 
 # Собираем frontend
 echo "🔨 Собираем frontend..."
-npm run build
+npm run build:prod
 
 # Запускаем в режиме продакшена
 echo "🚀 Запускаем frontend на http://localhost:3000"

@@ -93,7 +93,7 @@ fi
 
 # Собираем frontend
 echo "🔨 Собираем frontend..."
-npm run build
+npm run build:prod
 
 # Запускаем frontend в режиме продакшена
 echo "🚀 Запускаем frontend..."

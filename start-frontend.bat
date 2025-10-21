@@ -43,7 +43,7 @@ if not exist node_modules (
 
 REM Собираем frontend
 echo 🔨 Собираем frontend...
-call npm run build
+call npm run build:prod
 
 REM Запускаем в режиме продакшена
 echo 🚀 Запускаем frontend на http://localhost:3000

@@ -1,8 +1,8 @@
 'use server';
 
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { ProductSchema, type Product } from '@/shared/schemas/product.schema';
-import { API_URLS, REVALIDATION_PATHS } from '@/config/routes';
+import { API_URLS } from '@/config/routes';
 import { createPostRequest, createPatchRequest, createDeleteRequest } from '@/config/api-utils';
 import { ErrorHandler, ERROR_MESSAGES } from '@/config/errors';
 
