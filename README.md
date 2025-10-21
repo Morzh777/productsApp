@@ -56,6 +56,19 @@ cd productsApp
 **Backend API:** http://localhost:8080/api  
 **Swagger:** http://localhost:8080/swagger
 
+## Примечания для Windows
+
+### Проблемы с Turbopack
+Если возникает ошибка `Turbopack Error: FileSystemPath leaves the filesystem root`:
+1. Turbopack автоматически отключен в конфигурации Next.js
+2. Windows скрипты используют команду `npm run dev:windows` без Turbopack
+3. Если проблема остается, запустите вручную: `npm run dev:windows`
+
+### Проблемы с кодировкой
+Если русский текст отображается некорректно в терминале:
+1. Убедитесь, что терминал поддерживает UTF-8 кодировку
+2. В PowerShell выполните: `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`
+
 > **Примечание:** Скрипты автоматически создают .env файлы и устанавливают зависимости при первом запуске. При работе без Nginx запускайте backend и frontend в разных терминалах.
 
 ## Функциональность

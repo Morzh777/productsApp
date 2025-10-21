@@ -1,6 +1,12 @@
 @echo off
 setlocal enabledelayedexpansion
 
+REM Set UTF-8 encoding for Russian text
+chcp 65001 >nul 2>&1
+
+REM Set console font for better Russian text display
+powershell -Command "& {$Host.UI.RawUI.Font = New-Object System.Management.Automation.Host.Size(8, 16)}" >nul 2>&1
+
 echo 🚀 Запуск Backend (NestJS)
 echo ==========================
 
