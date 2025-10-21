@@ -15,9 +15,9 @@ echo 🧹 Проверяем порт 3000...
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :3000') do (
     echo ⚠️  Порт 3000 занят, освобождаем...
     taskkill /PID %%a /F >nul 2>&1
+    echo ✅ Порт 3000 освобожден (PID: %%a)
 )
 timeout /t 2 /nobreak >nul
-echo ✅ Порт 3000 освобожден
 
 REM Переходим в папку frontend
 cd frontend\next-app
@@ -43,7 +43,8 @@ if not exist node_modules (
 
 REM Собираем frontend
 echo 🔨 Собираем frontend...
-call npm run build:prod
+set NODE_ENV=
+call npm run build
 
 REM Запускаем в режиме продакшена
 echo 🚀 Запускаем frontend на http://localhost:3000

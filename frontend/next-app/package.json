@@ -6,10 +6,9 @@
     "dev": "next dev",
     "dev:windows": "next dev",
     "build": "next build",
-    "build:prod": "cross-env NODE_ENV=production next build",
     "start": "next start",
     "lint": "eslint",
-    "analyze": "cross-env ANALYZE=true npm run build"
+    "analyze": "ANALYZE=true npm run build"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
@@ -24,7 +23,6 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.5.6",
     "tailwindcss": "^4",

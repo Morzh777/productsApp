@@ -93,7 +93,8 @@ fi
 
 # Собираем frontend
 echo "🔨 Собираем frontend..."
-npm run build:prod
+unset NODE_ENV
+npm run build
 
 # Запускаем frontend в режиме продакшена
 echo "🚀 Запускаем frontend..."
