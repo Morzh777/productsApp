@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { CategoryTagProps } from "@/types/components/CategoryTag.types";
 
 /**
@@ -11,11 +11,20 @@ import type { CategoryTagProps } from "@/types/components/CategoryTag.types";
  * с параметром фильтрации по категории.
  */
 export function CategoryTag({ category, className = "absolute bottom-2 left-2" }: CategoryTagProps) {
+  const router = useRouter();
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push(`/?category=${encodeURIComponent(category)}`);
+  };
+
   return (
-    <Link href={`/?category=${encodeURIComponent(category)}`} className={className}>
-      <span className="text-sm text-white bg-black/70 px-2 py-1 rounded-full hover:bg-black/80 transition-colors cursor-pointer">
-        {category}
-      </span>
-    </Link>
+    <span 
+      className={`${className} text-sm text-white bg-black/70 px-2 py-1 rounded-full hover:bg-black/80 transition-colors cursor-pointer`}
+      onClick={handleClick}
+    >
+      {category}
+    </span>
   );
 }

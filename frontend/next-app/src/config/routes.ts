@@ -15,10 +15,18 @@ export const ROUTES = {
 } as const;
 
 /**
+ * Получение базового URL для API
+ * 
+ * Использует переменную окружения NEXT_PUBLIC_API_URL или fallback на прямой backend.
+ */
+export const getApiBaseUrl = (): string => {
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002/api';
+};
+
+/**
  * API endpoints (относительные пути)
  */
 export const API_ROUTES = {
-  BASE_URL: 'http://localhost:8080/api',
   PRODUCTS: '/products',
   PRODUCT_DETAIL: (id: string | number) => `/products/${id}`,
   PRODUCT_CATEGORIES: '/products/categories',
@@ -29,10 +37,10 @@ export const API_ROUTES = {
  * Полные URL для API запросов
  */
 export const API_URLS = {
-  PRODUCTS: `${API_ROUTES.BASE_URL}${API_ROUTES.PRODUCTS}`,
-  PRODUCT_DETAIL: (id: string | number) => `${API_ROUTES.BASE_URL}${API_ROUTES.PRODUCT_DETAIL(id)}`,
-  PRODUCT_CATEGORIES: `${API_ROUTES.BASE_URL}${API_ROUTES.PRODUCT_CATEGORIES}`,
-  PRODUCTS_BY_CATEGORY: (category: string) => `${API_ROUTES.BASE_URL}${API_ROUTES.PRODUCTS_BY_CATEGORY(category)}`,
+  PRODUCTS: `${getApiBaseUrl()}${API_ROUTES.PRODUCTS}`,
+  PRODUCT_DETAIL: (id: string | number) => `${getApiBaseUrl()}${API_ROUTES.PRODUCT_DETAIL(id)}`,
+  PRODUCT_CATEGORIES: `${getApiBaseUrl()}${API_ROUTES.PRODUCT_CATEGORIES}`,
+  PRODUCTS_BY_CATEGORY: (category: string) => `${getApiBaseUrl()}${API_ROUTES.PRODUCTS_BY_CATEGORY(category)}`,
 } as const;
 
 /**

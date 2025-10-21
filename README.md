@@ -13,30 +13,50 @@
 > **Важно:** База данных PostgreSQL уже развернута на сервере **Neon** и готова к использованию.  
 > Локальная установка PostgreSQL не требуется - приложение подключается к облачной базе данных.
 
-## Установка и запуск
+## Быстрый запуск
+
+### Вариант 1: Без Nginx (простой запуск)
 
 ```bash
 # Клонируйте репозиторий
 git clone https://github.com/Morzh777/productsApp.git
 cd productsApp
 
-# Запустите автоматическую установку и запуск
+# Запустите backend (в отдельном терминале)
 # Для Unix-систем (macOS, Linux):
-./setup.sh
+./start-backend.sh
 
 # Для Windows:
-setup.bat
+start-backend.bat
+
+# Запустите frontend (в другом терминале)
+# Для Unix-систем (macOS, Linux):
+./start-frontend.sh
+
+# Для Windows:
+start-frontend.bat
 ```
 
-> **Примечание:** Скрипт автоматически установит все зависимости локально (в папки node_modules), настроит базу данных, установит и настроит Nginx (включая автоматическую установку Nginx на Windows через Chocolatey/winget или прямое скачивание), и запустит приложение. Для остановки нажмите `Ctrl+C`.
-> 
-> **Изоляция проекта:** Все зависимости устанавливаются локально в папки `node_modules` каждого проекта, что обеспечивает изоляцию от глобальных пакетов системы.
-> 
-> **Windows:** Если русский текст отображается некорректно, убедитесь что терминал поддерживает UTF-8 кодировку. Скрипт автоматически устанавливает кодировку UTF-8.
+**Frontend:** http://localhost:3000  
+**Backend API:** http://localhost:3002/api  
+**Swagger:** http://localhost:3002/swagger
 
-**Основной сайт:** http://localhost:8080  
-**API:** http://localhost:8080/api  
+### Вариант 2: С Nginx (полная настройка)
+
+```bash
+# Клонируйте репозиторий
+git clone https://github.com/Morzh777/productsApp.git
+cd productsApp
+
+# Запустите все сервисы с Nginx (Unix-системы)
+./start-with-nginx.sh
+```
+
+**Frontend:** http://localhost:8080  
+**Backend API:** http://localhost:8080/api  
 **Swagger:** http://localhost:8080/swagger
+
+> **Примечание:** Скрипты автоматически создают .env файлы и устанавливают зависимости при первом запуске. При работе без Nginx запускайте backend и frontend в разных терминалах.
 
 ## Функциональность
 
@@ -155,14 +175,17 @@ nginx -c /path/to/nginx.conf
 ## Основные команды
 
 ```bash
-# Установка всех зависимостей
-npm run install:all
-
-# Запуск backend
+# Запуск backend (разработка)
 cd backend/nest-api && npm run start:dev
 
-# Запуск frontend  
+# Запуск frontend (разработка)  
 cd frontend/next-app && npm run dev
+
+# Сборка backend (production)
+cd backend/nest-api && npm run build && npm run start:prod
+
+# Сборка frontend (production)
+cd frontend/next-app && npm run build && npm run start
 ```
 
 ## Архитектура компонентов
