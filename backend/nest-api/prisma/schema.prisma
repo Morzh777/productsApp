@@ -22,4 +22,5 @@ model Product {
   count       Int      @default(0)
 
   @@map("products")
+  @@index([category]) // Индекс для быстрого поиска по категориям
 }

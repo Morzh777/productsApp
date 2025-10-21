@@ -19,10 +19,10 @@ cd backend/nest-api
 # Проверяем наличие .env файла
 if [ ! -f .env ]; then
     echo "📝 Создаем .env файл..."
-    cat > .env << EOF
-DATABASE_URL="postgresql://neondb_owner:npg_vGY5fHwSoqZ9@ep-wandering-king-agz11e0s-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connection_limit=5&pool_timeout=20&connect_timeout=60"
+           cat > .env << EOF
+DATABASE_URL="postgresql://neondb_owner:npg_vGY5fHwSoqZ9@ep-wandering-king-agz11e0s-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connection_limit=50&pool_timeout=60&connect_timeout=60"
 PORT=3002
-NODE_ENV=development
+NODE_ENV=production
 EOF
     echo "✅ .env файл создан"
 fi
@@ -37,8 +37,8 @@ fi
 echo "🔧 Генерируем Prisma клиент..."
 npx prisma generate
 
-# Запускаем в режиме разработки
+# Запускаем в режиме продакшена
 echo "🚀 Запускаем backend на http://localhost:3002"
 echo "📚 Swagger доступен на http://localhost:3002/swagger"
 echo ""
-npm run start:dev
+npm run start:prod

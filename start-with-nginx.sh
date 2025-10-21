@@ -34,10 +34,10 @@ cd backend/nest-api
 # Создаем .env файл если его нет
 if [ ! -f .env ]; then
     echo "📝 Создаем .env файл..."
-    cat > .env << EOF
-DATABASE_URL="postgresql://neondb_owner:npg_vGY5fHwSoqZ9@ep-wandering-king-agz11e0s-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connection_limit=5&pool_timeout=20&connect_timeout=60"
+           cat > .env << EOF
+DATABASE_URL="postgresql://neondb_owner:npg_vGY5fHwSoqZ9@ep-wandering-king-agz11e0s-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require&connection_limit=50&pool_timeout=60&connect_timeout=60"
 PORT=3002
-NODE_ENV=development
+NODE_ENV=production
 EOF
     echo "✅ .env файл создан"
 fi
@@ -53,7 +53,7 @@ echo "🔧 Генерируем Prisma клиент..."
 npx prisma generate
 
 # Запускаем backend в фоне
-npm run start:dev &
+npm run start:prod &
 BACKEND_PID=$!
 
 # Возвращаемся в корень проекта

@@ -35,7 +35,7 @@ export async function getProducts() {
 export async function getCategories() {
   const response = await fetch(API_URLS.PRODUCT_CATEGORIES, {
     ...createGetRequest(API_URLS.PRODUCT_CATEGORIES),
-    next: { revalidate: 600, tags: ['categories'] } // 10 минут кеширования
+    next: { revalidate: 1800, tags: ['categories'] } // 30 минут кеширования
   });
 
   if (!response.ok) {

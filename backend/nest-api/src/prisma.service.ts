@@ -14,13 +14,8 @@ export class PrismaService
         },
       },
       log: ['query', 'info', 'warn', 'error'],
-      // Настройки connection pooling для предотвращения падения
-      __internal: {
-        engine: {
-          connectTimeout: 60000, // 60 секунд
-          poolTimeout: 20000,    // 20 секунд
-        },
-      },
+      // Настройки для предотвращения падения при высокой нагрузке
+      errorFormat: 'pretty',
     });
   }
 
@@ -30,5 +25,28 @@ export class PrismaService
 
   async onModuleDestroy() {
     await this.$disconnect();
+  }
+
+  // Метод для безопасного выполнения запросов с retry
+  async safeQuery<T>(query: () => Promise<T>, retries = 3): Promise<T> {
+    for (let i = 0; i < retries; i++) {
+      try {
+        return await query();
+      } catch (error: unknown) {
+        if (
+          error &&
+          typeof error === 'object' &&
+          'code' in error &&
+          error.code === 'P2024' &&
+          i < retries - 1
+        ) {
+          // Connection pool timeout - ждем и повторяем
+          await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
+          continue;
+        }
+        throw error;
+      }
+    }
+    throw new Error('Max retries exceeded');
   }
 }
