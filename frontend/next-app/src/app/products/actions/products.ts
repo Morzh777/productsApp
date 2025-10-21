@@ -12,12 +12,12 @@ import { CACHE_TAGS, CACHE_TAG_FUNCTIONS } from "@/config/cache-tags";
 
 // Утилита для извлечения данных из FormData
 function extractProductData(formData: FormData) {
-  const title = formData.get("title") as string;
-  const priceStr = formData.get("price") as string;
-  const description = formData.get("description") as string;
-  const image = formData.get("image") as string;
-  const category = formData.get("category") as string;
-  const ratingStr = formData.get("rating") as string;
+  const title = formData.get("title") as string | null;
+  const priceStr = formData.get("price") as string | null;
+  const description = formData.get("description") as string | null;
+  const image = formData.get("image") as string | null;
+  const category = formData.get("category") as string | null;
+  const ratingStr = formData.get("rating") as string | null;
 
   return {
     title: title?.trim() || undefined,
@@ -55,7 +55,8 @@ export async function createProductAction(formData: FormData) {
     clearTimeout(timeoutId);
 
     if (!response.ok) {
-      throw ErrorHandler.handleHttpError(response.status, ERROR_MESSAGES.CREATE_FAILED);
+      const errorText = await response.text();
+      throw ErrorHandler.handleHttpError(response.status, `${ERROR_MESSAGES.CREATE_FAILED}: ${errorText}`);
     }
 
     const result = await response.json();
